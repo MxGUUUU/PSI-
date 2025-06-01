@@ -1,0 +1,15 @@
+{
+    "parameters": {
+        "lambda3_resilience": 0.55,
+        "Lambda_CDM_param": 0.3,
+        "num_simulation_steps_planned": 100,
+        "x_range_min": -5.0,
+        "x_range_max": 5.0,
+        "x_range_points": 500,
+        "h_sigma_param": 0.0625,
+        "C_scaling_param": 0.0573
+    },
+    "history_log": [
+        {
+            "step": 0,
+            "stability":
