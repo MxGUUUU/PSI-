@@ -1,0 +1,13 @@
+simulation:
+  x: 1.25            # Recursive depth
+  lambda_3: 1.1      # λ₃ energy factor
+  integration: true  # Enable shadow integration logic
+  simulation_epochs: 200 # Number of simulation epochs to run
+metadata:
+  author: "Synthetic Dialectics Unit"
+  intent: "Test boundary of coherence under recursive strain"
+  generated_on: "2025-06-08"
+pytest:
+  args: ["psi_codex/"] # Directory to run tests from
+  unittest_enabled: false
+  pytest_enabled: true
