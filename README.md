@@ -87,9 +87,9 @@ This module (`psi_codex/codex_catastrophe.py`) provides a set of functions to si
     *   Branches into different operational modes ("Advanced resource allocation", "Tactical alert", "Monitoring anomalies", "SYSTEM COLLAPSE") based on these inputs.
     *   Thresholds (0.8 / 0.3 for `phi`) act like Ψ-Codex phase-slip limits.
 
-*   **Knot Stability (`knot_stable`)** (Conceptual, described in user notes, not fully implemented in `codex_catastrophe.py` yet but relevant):
+*   **Knot Stability (`knot_stable`)** (Conceptual, based on user notes, not yet fully implemented in `codex_catastrophe.py` but relevant to the module's context):
     *   A function to determine if Reidemeister-I loops stay tight, indicating identity stability.
-    *   Formula: `l3 * phi_max < (Δ - θ - η - psi48_norm)`
+    *   Conceptual Formula: `l3 * phi_max < (Δ - θ - η - psi48_norm)`
     *   **Physics-Grade Definitions for Parameters**:
         | Symbol   | “Plain-English” Reading        | Suggested Physical Proxy                                     | Typical Unit | Source             |
         |----------|--------------------------------|--------------------------------------------------------------|--------------|--------------------|
