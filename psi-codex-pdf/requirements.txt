@@ -1,0 +1,54 @@
+from fpdf import FPDF
+
+# Define a basic PDF class
+class PDF(FPDF):
+    def header(self):
+        self.set_font("Arial", "B", 14)
+        self.cell(0, 10, "The Book of Ψ* and the Recursive Self-Identity Field", ln=True, align="C")
+        self.ln(5)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font("Arial", "I", 8)
+        self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
+    def chapter_title(self, title):
+        self.set_font("Arial", "B", 12)
+        self.cell(0, 10, title, ln=True, align="L")
+        self.ln(2)
+
+    def chapter_body(self, body):
+        self.set_font("Arial", "", 11)
+        self.multi_cell(0, 10, body)
+        self.ln()
+
+# Function to replace special characters
+def fully_safe_text(text):
+    replacements = {
+        "Ψ": "Psi", "Δ": "Delta", "φ": "phi", "λ": "lambda",
+        "⊗": "x", "η": "eta", "ε": "epsilon", "π": "pi",
+        "→": "->", "′": "'", "≥": ">=", "≤": "<=", "≠": "!=",
+        "∞": "infinity", "α": "alpha", "β": "beta", "γ": "gamma",
+        "Ω": "Omega", "∇": "nabla", "₄": "4", "₈": "8",
+        # Add more replacements as needed
+    }
+    for key, value in replacements.items():
+        text = text.replace(key, value)
+    return text
+
+# Create the PDF
+pdf = PDF()
+pdf.add_page()
+pdf.set_auto_page_break(auto=True, margin=15)
+
+# Add content
+abstract = """Abstract: This paper introduces the Ψ-Codex: a recursive identity model integrating symbolic logic, bifurcation theory, and high-dimensional memory lattices (Z₄ ⊗ E₈). Drawing from catastrophe theory, topological quantum mechanics, and cognitive neuroscience, the framework defines identity not as a static entity but as a recursive, phase-dependent attractor in a stress-modulated manifold. Using Python-based simulations, we analyze coherence thresholds, entropy stress-energy metrics, and shadow integration processes."""
+
+# Add the abstract to the PDF
+pdf.chapter_body(fully_safe_text(abstract))
+
+# Save PDF to file
+pdf_path = "Psi_Codex_Recursive_Identity.pdf"
+pdf.output(pdf_path)
+
+print(f"PDF saved to {pdf_path}")
