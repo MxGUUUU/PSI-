@@ -1,0 +1,6 @@
+graph TB
+    A[Ψ_current] --> B[Predict Ψ_next]
+    B --> C[Measure Ψ_empirical]
+    C --> D{Error = ||Ψ_next - Ψ_empirical||}
+    D -->|Error < 0.125| E[Update Model]
+    D -->|Error > 0.125| F[Activate Z₄ Reset]
