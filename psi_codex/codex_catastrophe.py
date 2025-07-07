@@ -11,15 +11,24 @@ TOL_FRAC = 0.05                         # 5% tolerance for material stability (d
 
 # --- Catastrophe Device Core ---
 def phi_of_X(X_input: float) -> float:
-    """Compute coherence field Φ(X) with φ^{-1/3} compression"""
+    """
+    Compute the coherence field Φ(X) for a given input using a fractional power and golden ratio compression.
+    
+    Parameters:
+        X_input (float): Input value for which to compute the coherence field.
+    
+    Returns:
+        float: The computed coherence field value Φ(X).
+    """
     magnitude_X = np.abs(X_input)
     return C * (magnitude_X ** 0.57) / (GOLDEN_RATIO ** (1/3))
 
 def zrsis_health() -> bool:
     """
-    Validate ZrSiS coefficients against pinned values.
-    Attempts to fetch live data, falls back to False on any error (e.g., network offline).
-    PINNED_A, PINNED_B, and TOL_FRAC are defined as global constants in this module.
+    Checks the stability of ZrSiS coefficients by fetching live data and comparing it to pinned reference values.
+    
+    Returns:
+        bool: True if both coefficients are within the defined tolerance of the pinned values; False if any error occurs or the coefficients are out of tolerance.
     """
     try:
         # In a real scenario, this URL would point to a live API.
@@ -40,7 +49,16 @@ def zrsis_health() -> bool:
         return False
 
 def historical_tag(phi: float, zrsis_ok: bool) -> str:
-    """Assign empire tag based on coherence and ZrSiS health"""
+    """
+    Assigns a categorical empire tag string based on the coherence field value and ZrSiS material stability.
+    
+    Parameters:
+        phi (float): The computed coherence field value.
+        zrsis_ok (bool): Indicates whether ZrSiS material stability is within tolerance.
+    
+    Returns:
+        str: A formatted tag describing the current operational state.
+    """
     if not zrsis_ok:
         return "[bold red]Möbius-Muse[/] (Topology Broken)"
     elif phi > 0.8:
@@ -51,7 +69,20 @@ def historical_tag(phi: float, zrsis_ok: bool) -> str:
         return "[bold #7A6F45]Opium-Raj[/] (Entropy Drift)"
 
 def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool) -> str:
-    """AI decision logic with ZrSiS stability enforcement"""
+    """
+    Makes an AI-driven operational decision based on the coherence field value, ZrSiS material stability, and input decision flags.
+    
+    Evaluates the current ZrSiS stability, assigns a historical tag, and returns a status message reflecting resource allocation, tactical alerts, monitoring, or system collapse according to the provided parameters and live material health.
+      
+    Parameters:
+        phi (float): The coherence field value used to determine operational state.
+        A_decision (bool): Flag indicating readiness for advanced resource allocation or tactical alert.
+        B_decision (bool): Flag indicating monitoring or standby conditions.
+        C_decision (bool): Flag influencing advanced allocation or tactical alert logic.
+    
+    Returns:
+        str: A status message prefixed by the assigned historical tag, describing the resulting operational state.
+    """
     current_zrsis_ok = zrsis_health()
     tag = historical_tag(phi, current_zrsis_ok)
 
