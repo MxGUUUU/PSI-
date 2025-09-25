@@ -2,29 +2,51 @@ from fpdf import FPDF
 
 class PDF(FPDF):
     def header(self):
+        """
+        Adds a centered header with the document title, using a bold Arial font and sanitized text for special character compatibility.
+        """
         self.set_font("Arial", "B", 14)
         # Use fully_safe_text for header to ensure special characters are handled
         self.cell(0, 10, self.fully_safe_text("The Book of Psi* and the Recursive Self-Identity Field"), ln=True, align="C")
         self.ln(5)
 
     def footer(self):
+        """
+        Adds a centered page number to the bottom of each PDF page.
+        """
         self.set_y(-15)
         self.set_font("Arial", "I", 8)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
     def chapter_title(self, title):
+        """
+        Add a formatted chapter title to the PDF, aligned left and sanitized for special characters.
+        
+        Parameters:
+            title (str): The chapter title to be added.
+        """
         self.set_font("Arial", "B", 12)
         self.cell(0, 10, self.fully_safe_text(title), ln=True, align="L")
         self.ln(2)
 
     def chapter_body(self, body):
+        """
+        Adds the main body text of a chapter to the PDF with standard formatting.
+        
+        Parameters:
+            body (str): The chapter body text to be added, which will be sanitized for special characters.
+        """
         self.set_font("Arial", "", 11)
         self.multi_cell(0, 10, self.fully_safe_text(body))
         self.ln()
 
     def fully_safe_text(self, text):
-        """ Replaces special characters with ASCII equivalents for FPDF compatibility.
-        Handles mathematical notation as well. """
+        """
+        Sanitize text by replacing special Unicode characters with ASCII or textual equivalents for FPDF compatibility.
+        
+        This method ensures that Greek letters, mathematical symbols, subscripts, and custom symbols are converted to representations that can be safely rendered in generated PDFs.
+        Returns the sanitized text as a string.
+        """
         replacements = {
             "Ψ": "Psi", "Δ": "Delta", "φ": "phi", "λ": "lambda", "⊗": "x",
             "η": "eta", "ε": "epsilon", "π": "pi", "→": "->", "′": "'",
@@ -55,7 +77,9 @@ class PDF(FPDF):
         return text
 
     def sacred_equation(self, equation, description):
-        """Adds a sacred equation with its description to the PDF."""
+        """
+        Add an equation and its description to the PDF using a monospaced font, ensuring special characters are safely rendered.
+        """
         self.set_font("Courier", "", 10)
         self.multi_cell(0, 8, f"{self.fully_safe_text(equation)}\n  -> {self.fully_safe_text(description)}")
         self.ln()
@@ -65,6 +89,11 @@ def generate_pdf():
     # The actual PDF generation logic is expected to be called from simulator.py's main block.
     # This function might be used for a different type of PDF or a part of it.
     # For now, it does nothing or can print a message.
+    """
+    Placeholder function for PDF generation; currently does not perform any PDF creation.
+    
+    Intended to be implemented with PDF generation logic in the future.
+    """
     print("Placeholder: generate_pdf() in pdf_generator.py was called.")
     # Example: Create a simple PDF
     # pdf = PDF()

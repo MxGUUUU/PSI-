@@ -14,8 +14,9 @@ except ImportError:
 @pytest.fixture(scope="module", autouse=True)
 def run_simulation_once():
     """
-    Runs the simulation once before all tests in this module,
-    and cleans up generated files afterwards.
+    Module-scoped fixture that runs the simulation once before all tests and removes generated output files before and after testing.
+    
+    This ensures a clean test environment by deleting any pre-existing output files, executing the simulation to generate new outputs, and cleaning up all generated files after the tests complete.
     """
     # Define output file paths
     fixed_points_plot = "psi_critical_dynamics_enhanced_fixed_points.png"
@@ -43,7 +44,9 @@ def run_simulation_once():
             os.remove(f_path)
 
 def test_simulation_output_files():
-    """Test that the simulation generates the expected output files."""
+    """
+    Verify that the simulation produces all expected output files, including plots and the PDF report.
+    """
     assert os.path.exists("psi_critical_dynamics_enhanced_fixed_points.png"), "Critical dynamics plot not generated."
     assert os.path.exists("psi_shadow_connections.png"), "Shadow connections plot not generated."
     assert os.path.exists("Psi_Codex_Recursive_Identity_Report.pdf"), "PDF report not generated."
@@ -51,7 +54,9 @@ def test_simulation_output_files():
 
 
 def test_pdf_content():
-    """Test that the PDF contains expected content."""
+    """
+    Verify that the generated PDF report exists, is of sufficient size, and contains key expected textual content, including specific phrases and section titles.
+    """
     pdf_path = Path("Psi_Codex_Recursive_Identity_Report.pdf")
     assert pdf_path.exists(), "PDF file does not exist for content checking."
     assert pdf_path.stat().st_size > 1000, "PDF file is unexpectedly small."

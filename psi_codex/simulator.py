@@ -16,7 +16,22 @@ PLANCK_SCALE = 1.616255e-35
 
 # --- Reverse Product Rule Operator ---
 def reverse_product_rule(f, df_dx, g, dg_dx, a, b):
-    """Implements integration by parts: ∫f dg = [f·g] - ∫g df"""
+    """
+    Compute the definite integral of f(x)·dg(x)/dx over [a, b] using integration by parts.
+    
+    This function numerically evaluates ∫ₐᵇ f(x)·dg(x)/dx dx as [f(x)·g(x)]ₐᵇ - ∫ₐᵇ g(x)·df(x)/dx dx, using the trapezoidal rule for the integral term.
+    
+    Parameters:
+        f: Function of x to be integrated.
+        df_dx: Derivative of f with respect to x.
+        g: Function of x whose derivative is multiplied by f.
+        dg_dx: Derivative of g with respect to x (not used in this computation).
+        a: Lower limit of integration.
+        b: Upper limit of integration.
+    
+    Returns:
+        result (float): The computed value of the integration by parts over [a, b].
+    """
     boundary_term = f(b)*g(b) - f(a)*g(a)
     integral_term = np.trapz([g(x)*df_dx(x) for x in np.linspace(a, b, 100)],
                              np.linspace(a, b, 100))
@@ -24,14 +39,34 @@ def reverse_product_rule(f, df_dx, g, dg_dx, a, b):
 
 # --- Critical Metrics ---
 def gamma_factorial(x):
-    """Factorial extension using gamma function"""
+    """
+    Returns the factorial of a real number using the gamma function extension.
+    
+    Parameters:
+        x (float): The input value for which to compute the factorial.
+    
+    Returns:
+        float: The factorial of x if x is non-negative; returns 0 for negative inputs.
+    """
     if x < 0:
         return 0
     return gamma(x + 1)
 
 def symbolic_biomarker(x, n, P_x, u2, ui, p=1, y_i=1.0):
     """
-    Computes: 3⋅(n⋅cos(x)⋅x! + 1.5⋅P_x^1.5)⋅(u₂-uᵢ)^p⋅e^C⋅sin(x²+3)⋅y(i)
+    Compute a symbolic biomarker value combining factorial, trigonometric, pressure, divergence, exponential, and weighting terms.
+    
+    Parameters:
+        x (float): Input value for factorial and trigonometric terms; must be non-negative and less than the factorial limit to contribute to the factorial term.
+        n (float): Scaling factor for the cosine-factorial term.
+        P_x (float): Pressure-like parameter used in the pressure term.
+        u2 (float): Divergence upper bound.
+        ui (float): Divergence lower bound.
+        p (float, optional): Exponent for the divergence term. Defaults to 1.
+        y_i (float, optional): Weighting factor applied to the final result. Defaults to 1.0.
+    
+    Returns:
+        float: The computed biomarker value.
     """
     x_fact = gamma_factorial(x) if (abs(x) < FACTORIAL_LIMIT and x >= 0) else 0
 
@@ -43,14 +78,27 @@ def symbolic_biomarker(x, n, P_x, u2, ui, p=1, y_i=1.0):
     return 3 * (term_cos_fact + term_pressure) * divergence * math.exp(C) * kernel * y_i
 
 def a2_curvature(x, psi, y_i, eps=1e-8):
-    """a₂ = 3/(x⁵·ψ·y(i) - 1)"""
+    """
+    Compute the curvature metric a₂ as 3 divided by (x⁵·ψ·y_i − 1).
+    
+    Returns infinity if x is zero or the denominator is near zero to avoid division by zero.
+    """
     if x == 0:
         return np.inf
     denom = x**5 * psi * y_i - 1
     return 3 / denom if abs(denom) > 1e-6 else np.inf
 
 def biomarker(x, eps=1e-3):
-    """|cos(x)|/(x+ε)"""
+    """
+    Compute a normalized biomarker metric as the absolute value of cosine of x divided by (x + ε).
+    
+    Parameters:
+        x (float): Input value.
+        eps (float, optional): Small constant to avoid division by zero. Default is 1e-3.
+    
+    Returns:
+        float: The computed biomarker value, or infinity if the denominator is zero.
+    """
     if (x + eps) == 0:
         return np.inf
     return np.abs(np.cos(x)) / (x + eps)
@@ -58,6 +106,13 @@ def biomarker(x, eps=1e-3):
 # --- Tron Movement Engine ---
 class TronMovementEngine:
     def __init__(self, grid_size=100, max_speed=0.1):
+        """
+        Initialize the TronMovementEngine with position, speed, energy, and trace state on a 1D grid.
+        
+        Parameters:
+            grid_size (int): Number of discrete positions on the grid.
+            max_speed (float): Maximum allowed speed for the agent.
+        """
         self.position = 0.0
         self.speed = max_speed
         self.max_speed = max_speed
@@ -68,7 +123,12 @@ class TronMovementEngine:
         self.history = []
 
     def move(self, acceleration_factor=1.0):
-        """Move with Tron constraints: no overtracing, deceleration"""
+        """
+        Updates the agent's position and speed according to Tron movement rules, enforcing grid boundaries, preventing retracing, applying deceleration on collisions, and decrementing energy. Records the resulting state in the movement history.
+        
+        Parameters:
+            acceleration_factor (float): Multiplier for speed when updating position.
+        """
         new_position = self.position + self.speed * acceleration_factor
 
         if new_position < 0 or new_position >= self.grid_size:
@@ -94,7 +154,9 @@ class TronMovementEngine:
         })
 
     def reset(self):
-        """Reset engine state"""
+        """
+        Resets the TronMovementEngine to its initial state, clearing position, speed, trace, energy, and history.
+        """
         self.position = 0.0
         self.speed = self.max_speed
         self.trace[:] = False
@@ -103,7 +165,18 @@ class TronMovementEngine:
 
 # --- Julia Set Functions ---
 def generate_julia_set(width=800, height=600, c=-0.7 + 0.27j, max_iter=100):
-    """Generate Julia set with phase coupling to Ψ(t)"""
+    """
+    Generates the magnitude and escape mask of a Julia set fractal for a given complex parameter.
+    
+    Parameters:
+        width (int): Number of points along the real axis.
+        height (int): Number of points along the imaginary axis.
+        c (complex): Complex parameter defining the Julia set.
+        max_iter (int): Maximum number of iterations for the escape algorithm.
+    
+    Returns:
+        tuple: A tuple containing the array of magnitudes of the final iterates and a boolean mask indicating points that did not escape.
+    """
     x = np.linspace(-2, 2, width)
     y = np.linspace(-2, 2, height)
     X, Y = np.meshgrid(x, y)
@@ -120,8 +193,14 @@ def generate_julia_set(width=800, height=600, c=-0.7 + 0.27j, max_iter=100):
 
 def flood_fill_1d(mask, start_idx):
     """
-    Performs a 1D flood fill to find connected components in a boolean mask.
-    Used for shadow_connections.
+    Finds all indices connected to a starting index in a 1D boolean mask using flood fill.
+    
+    Parameters:
+        mask (array-like): Boolean array indicating valid positions.
+        start_idx (int): Index from which to begin the flood fill.
+    
+    Returns:
+        list: Sorted list of indices belonging to the connected component containing start_idx.
     """
     component = []
     q = [start_idx]
@@ -140,8 +219,13 @@ def flood_fill_1d(mask, start_idx):
 
 def trace_connectivity(position_history):
     """
-    Creates adjacency matrix of visited positions for Tron.
-    Connects adjacent positions.
+    Constructs an array of connected position pairs from a sequence of Tron positions, linking consecutive positions that differ by exactly one.
+    
+    Parameters:
+        position_history (array-like): Sequence of Tron positions, possibly containing NaNs.
+    
+    Returns:
+        np.ndarray: Array of (position, next_position) pairs where positions are adjacent.
     """
     positions = np.array(position_history)
     positions = positions[~np.isnan(positions)]
@@ -158,7 +242,14 @@ def trace_connectivity(position_history):
 
 def phase_entanglement(psi_phase, julia_set_magnitude):
     """
-    Connects phase-synchronized points in the Psi field, modulated by Julia set.
+    Identifies and connects pairs of indices in the Psi field whose phases fall within the same phase bin and are spatially close, as determined by their indices.
+    
+    Parameters:
+        psi_phase (array-like): Array of phase values for the Psi field.
+        julia_set_magnitude (array-like): Magnitude values from the Julia set, used for modulation (not directly used in connectivity).
+    
+    Returns:
+        np.ndarray: Array of index pairs representing phase-synchronized, spatially proximate connections.
     """
     if psi_phase is None or julia_set_magnitude is None or len(psi_phase) == 0:
         return np.array([])
@@ -177,8 +268,10 @@ def phase_entanglement(psi_phase, julia_set_magnitude):
 
 def shadow_connections(psi_field_history):
     """
-    Connects points undergoing simultaneous collapse (factorial reset).
-    Identifies components based on `FACTORIAL_LIMIT` breach.
+    Identifies and groups connected regions in the Psi field history where the field magnitude exceeds the factorial reset threshold at each simulation step.
+    
+    Returns:
+        all_components (list): A list of dictionaries, each containing the simulation step ('step') and the sorted list of connected indices ('indices') where the Psi field underwent a factorial reset.
     """
     all_components = []
 
@@ -200,7 +293,10 @@ def shadow_connections(psi_field_history):
 
 def adaptive_fixed_points(history_data):
     """
-    Detects emergent fixed points from dynamics based on Tron's history and Psi's phase.
+    Identify fixed points in the system's evolution, including stationary Tron positions, energy vortices, and phase-locked Psi field nodes.
+    
+    Returns:
+        dict: Contains arrays of unique stationary Tron positions (where speed is near zero), positions of local energy minima (vortices), and mean Psi phases locked near multiples of π/2 (phase nodes).
     """
     tron_history = history_data.get('tron_history', [])
     psi_history = history_data.get('psi_history', [])
@@ -247,6 +343,13 @@ def adaptive_fixed_points(history_data):
 # --- Quantum Field System ---
 class QuantumCognitiveField:
     def __init__(self, x_range, grid_size_tron=100):
+        """
+        Initialize the QuantumCognitiveField with a spatial range, Psi field, Tron movement engine, and Julia set data.
+        
+        Parameters:
+            x_range (np.ndarray): The spatial domain over which the Psi field is defined.
+            grid_size_tron (int, optional): The size of the discrete grid for the Tron movement engine. Defaults to 100.
+        """
         self.x_range = x_range
         self.psi = np.exp(-x_range**2) * np.exp(1j * x_range)
         self.eta_E = 0.0
@@ -257,20 +360,34 @@ class QuantumCognitiveField:
         self.julia_set_magnitude, self.julia_set_mask = generate_julia_set()
 
     def veridicality_deviation(self):
-        """Measure ¬(x² ≈ |Ψ|) condition"""
+        """
+        Calculates the mean absolute deviation between the magnitude of the Psi field and the squared spatial coordinate.
+        
+        Returns:
+            float: The average absolute difference between |Psi| and x² across the spatial range, or NaN if input arrays are invalid.
+        """
         if len(self.psi) == 0 or len(self.x_range) == 0 or len(self.psi) != len(self.x_range):
             return np.nan
         return np.mean(np.abs(np.abs(self.psi) - self.x_range**2))
 
     def holonomy_constraint(self):
-        """Calculate ∮Ψ·dℓ around spatial boundary"""
+        """
+        Computes the holonomy constraint as the difference in the Psi field at the spatial boundaries.
+        
+        Returns:
+            The difference between the last and first values of the Psi field array, or NaN if the array is too short.
+        """
         if len(self.psi) < 2:
             return np.nan
         boundary_vals = [self.psi[0], self.psi[-1]]
         return boundary_vals[1] - boundary_vals[0]
 
     def update_field(self, pressure_field):
-        """Update Ψ-field with biomarker-driven dynamics"""
+        """
+        Updates the Psi field by applying biomarker-driven growth, curvature checks, and fractal resets, while modulating with Tron movement and Julia set phase influence.
+        
+        For each spatial point, computes the symbolic biomarker and curvature metric. If critical thresholds are exceeded, applies a fractal reset (shadow integration) and records the event. The Psi field is updated with a nonlinear growth term, modulated at the Tron agent's position by its speed, and globally by the Julia set's phase influence. After updating the field, advances the Tron agent, recalculates the stress-energy metric, and records the current state and Psi field snapshot in history.
+        """
         current_psi_copy = self.psi.copy()
         for i, x_val in enumerate(self.x_range):
             bio = symbolic_biomarker(
@@ -327,7 +444,11 @@ class QuantumCognitiveField:
         self.psi_history.append(self.psi.copy())
 
     def shadow_integration(self, psi_val, x_val):
-        """Apply G!(-(-X)) collapse at critical points"""
+        """
+        Applies a fractal reset operator to the Psi field value at critical points.
+        
+        If the magnitude of `psi_val` is close to `x_val` squared, resets its magnitude to `x_val` squared. Otherwise, replaces the magnitude with the factorial of its integer part modulo 256. Returns the rescaled Psi value, or the original value if its magnitude is negligible.
+        """
         if psi_val is None:
             return None
         psi_abs = np.abs(psi_val)
@@ -343,11 +464,35 @@ class QuantumCognitiveField:
         return psi_val
 
     def solve_disparity_pde(self, t_span, init_cond):
-        """Solve the disparity PDE with quantum bounds"""
+        """
+        Solves the disparity partial differential equation (PDE) for the Psi field using quantum bounds and curvature metrics.
+        
+        The PDE incorporates curvature (a₂), biomarker values, and a Planck-scale quantum bound to model disparity dynamics. Uses the BDF method for stiff ODEs. If the solver fails or an exception occurs, returns a dummy solution with NaN values.
+        
+        Parameters:
+            t_span (tuple): Time interval for integration.
+            init_cond (array-like): Initial condition for the PDE.
+        
+        Returns:
+            OdeResult: Solution object containing time points, solution values, and solver status.
+        """
         avg_psi_abs = np.mean(np.abs(self.psi)) if self.psi is not None and len(self.psi) > 0 else 0.0
         avg_y_i = 1.0
 
         def pde_system(t, D, kappa, psi_val_for_a2, y_i_val_for_a2):
+            """
+            Defines the right-hand side of a disparity PDE system, combining curvature, biomarker, and quantum bound terms.
+            
+            Parameters:
+                t (float): Conceptual time or spatial variable for the PDE.
+                D (float or array-like): Current value(s) of the disparity variable.
+                kappa (float): Curvature coefficient.
+                psi_val_for_a2 (complex): Psi field value used to compute curvature.
+                y_i_val_for_a2 (float): Weighting factor for curvature calculation.
+            
+            Returns:
+                float: The computed PDE term for the given inputs, with overflow and underflow protection.
+            """
             a2 = a2_curvature(t, psi_val_for_a2, y_i_val_for_a2)
             bio_val = biomarker(t)
             exponent_term = -(0.125 - bio_val)
@@ -390,8 +535,16 @@ class QuantumCognitiveField:
 # --- Main Simulation ---
 def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
     """
-    Runs the main Ψ-Codex simulation over a defined spatial range and number of epochs.
-    Collects various diagnostics and histories.
+    Run the Ψ-Codex simulation over a specified spatial range and number of epochs, collecting diagnostics and system histories.
+    
+    Parameters:
+        x_min (float): Minimum value of the spatial domain.
+        x_max (float): Maximum value of the spatial domain.
+        steps (int): Number of spatial discretization steps.
+        simulation_epochs (int): Number of simulation epochs to run.
+    
+    Returns:
+        diagnostics (dict): Dictionary containing simulation results, including spatial range, biomarker and curvature metrics, final Psi field and phase, Tron movement history, Julia set data, disparity PDE solution, critical events, fixed points, and connectivity analyses.
     """
     x_range = np.linspace(x_min, x_max, steps)
     pressure_field = np.sin(x_range) + 0.5 * np.cos(x_range * 2)
@@ -459,6 +612,14 @@ def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
 
 # --- Visualization ---
 def plot_results(results):
+    """
+    Generate and save a comprehensive set of visualizations summarizing the simulation results of the Psi-Codex quantum-cognitive field system.
+    
+    This function creates multi-panel figures displaying critical biomarker and stability metrics, stress-energy and veridicality deviation, the final quantum field state, complex phase space, disparity PDE solutions, critical events, Tron movement history with fixed points and connectivity, and Julia set visualizations with phase nodes and entanglement connections. It also generates a separate plot for shadow integration connections across simulation steps. All plots are saved as PNG files for further analysis or embedding in reports.
+    
+    Parameters:
+        results (dict): Dictionary containing simulation outputs, including field histories, metrics, fixed points, connectivity data, and fractal visualizations.
+    """
     fig, axs = plt.subplots(4, 2, figsize=(16, 20))
 
     # Plot 0,0: Biomarker and Stability (a₂)
@@ -694,6 +855,15 @@ def plot_results(results):
 
 # --- Utility to get content from other immersives (simplified for direct use) ---
 def get_hardcoded_immersive_content(immersive_id):
+    """
+    Return a hardcoded immersive content string corresponding to the given immersive ID.
+    
+    Parameters:
+        immersive_id (str): The key identifying which immersive content to retrieve.
+    
+    Returns:
+        str: The immersive content text associated with the provided ID, or a default message if not found.
+    """
     content_map = {
         "psi_codex_full_synthesis": """
 This equation signifies that `reality` is `experienced` through the `interaction` of the `manifestation potential (Psi)` with the `observational operator (Ô)`, mediated by the `intentional field (Psi*)`. `Sacred Geometry Factor` (`Golden Ratio basis`) further `modulates` this `conjugate field`, suggesting `geometrical shaping` of `observation`.
@@ -1045,7 +1215,12 @@ Let's discuss how we can implement these monitoring and response strategies.
 
 # --- Utility to generate simple plot image for PDF ---
 def generate_simple_plot_image(filename="psi_plot.png"):
-    """Generates a simple plot and saves it as an image for PDF embedding."""
+    """
+    Create and save a simple sine-cosine waveform plot as an image file for use in PDF reports.
+    
+    Parameters:
+        filename (str): The name of the output image file.
+    """
     x_vals = np.linspace(0, 2 * np.pi, 100)
     y_vals = np.sin(x_vals) + np.cos(x_vals / 2) # A simple wave for demonstration
     plt.figure(figsize=(8, 4))
@@ -1061,6 +1236,11 @@ def generate_simple_plot_image(filename="psi_plot.png"):
 
 # --- Main execution block for simulator.py ---
 def simulate():
+    """
+    Runs the full Psi-Codex quantum cognitive field simulation, generates visualizations, and produces a comprehensive PDF report.
+    
+    This function initializes and executes the simulation for a fixed number of epochs, collects and summarizes critical events, creates and saves diagnostic plots, and compiles a detailed PDF report that includes theoretical content, simulation results, and embedded images.
+    """
     print("=== 🌌 PSI-Codex Critical Dynamics with Fixed Points and Dot-Connecting ===")
     print("Initializing quantum cognitive manifold simulation...")
     print(f"Critical thresholds: η_E > {ETA_E_THRESHOLD}, Biomarker > {BIOMARKER_THRESHOLD}")

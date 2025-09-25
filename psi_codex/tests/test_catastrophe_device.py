@@ -6,7 +6,11 @@ from psi_codex.codex_catastrophe import phi_of_X, aladdin_palantir_decision, his
 # --- Unit Tests for codex_catastrophe.py ---
 
 def test_phi_monotone():
-    """Φ(X) should be non-decreasing with |X|"""
+    """
+    Test that the phi_of_X function is non-decreasing with respect to the absolute value of its input.
+    
+    Verifies that for a range of values from 0.0 to 3.0, the output of phi_of_X does not decrease, allowing for minor floating-point inaccuracies.
+    """
     xs = np.linspace(0.0, 3.0, 10)
     phis = [phi_of_X(x) for x in xs]
     # Check that each element is greater than or equal to the previous one
@@ -16,7 +20,11 @@ def test_phi_monotone():
         "Φ(X) is not non-decreasing with |X|"
 
 def test_decision_branches(mocker): # mocker fixture is automatically provided by pytest-mock
-    """Test the main decision branches of aladdin_palantir_decision, mocking zrsis_health"""
+    """
+    Test all major decision branches of the aladdin_palantir_decision function by simulating different system health states and phi values.
+    
+    This test covers the VLAD-III, Palaiologos, Opium-Raj, and Möbius-Muse branches by mocking the zrsis_health dependency and varying decision flags. It asserts that the returned decision strings contain the expected keywords and status messages for each scenario.
+    """
 
     # Test case 1: VLAD-III branch (High phi, ZrSiS OK)
     mocker.patch('psi_codex.codex_catastrophe.zrsis_health', return_value=True)
@@ -59,7 +67,11 @@ def test_decision_branches(mocker): # mocker fixture is automatically provided b
     assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_opium, True, False, False)
 
 def test_historical_tag_logic():
-    """Test the historical_tag function directly for all branches."""
+    """
+    Test that the historical_tag function returns the correct tag string for all combinations of phi values and ZrSiS health status.
+    
+    Verifies that the tag output matches the expected label for each operational branch (VLAD-III, Palaiologos, Opium-Raj, Möbius-Muse) across boundary and typical phi values, and for both healthy and unhealthy system states.
+    """
     # ZrSiS OK cases
     assert historical_tag(0.9, True) == "[bold #8A0303]VLAD-III[/] (Staking Ops)"
     assert historical_tag(0.81, True) == "[bold #8A0303]VLAD-III[/] (Staking Ops)" # Boundary for > 0.8
