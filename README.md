@@ -1,19 +1,9 @@
-# PSI
+# Ψ-Codex
 
-PSI is a project designed to provide advanced data processing and analytics tools for scientific research.  
-This repository contains the source code, documentation, and resources for PSI.
+The Ψ-Codex is a conceptual framework for analyzing historical narratives and catastrophic dynamics through mathematical metaphors. It provides a methodology for studying patterns of collective memory, trauma, and repair while maintaining a neutral, third-person perspective.
 
-## Features
+This repository contains two primary explorations of the Ψ-Codex:
+1.  **A Simple Explanation:** A user-friendly, non-technical introduction to the core concepts using simple analogies and visualizations.
+2.  **A Technical Model:** A detailed mathematical and computational framework using network dynamics, spectral analysis, and simulation to model historical processes.
 
-- Feature 1
-- Feature 2
-- Feature 3
-
-## Getting Started
-
-Instructions on how to get started with the project.
-
-
-
-
-This project is licensed under the MIT License.
+The goal is to use mathematics as a diplomatic language to discuss sensitive historical patterns without direct attribution or blame, focusing on universal cycles of crisis and recovery.
