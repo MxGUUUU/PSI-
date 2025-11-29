@@ -18,45 +18,53 @@ def test_phi_monotone():
 def test_decision_branches(mocker): # mocker fixture is automatically provided by pytest-mock
     """Test the main decision branches of aladdin_palantir_decision, mocking zrsis_health"""
 
+    # Create a reality input that will result in a coherent state (positive sum)
+    reality_input = list(np.sin(np.linspace(0, 2 * np.pi, 100)) + 1)
+
     # Test case 1: VLAD-III branch (High phi, ZrSiS OK)
     mocker.patch('psi_codex.codex_catastrophe.zrsis_health', return_value=True)
     phi_val_vlad = 0.9
     # A_decision=True, B_decision=False, C_decision=False
-    assert "VLAD-III" in aladdin_palantir_decision(phi_val_vlad, True, False, False)
-    assert "Advanced resource allocation engaged" in aladdin_palantir_decision(phi_val_vlad, True, False, False)
+    assert "VLAD-III" in aladdin_palantir_decision(phi_val_vlad, True, False, False, reality_input)
+    assert "Advanced resource allocation engaged" in aladdin_palantir_decision(phi_val_vlad, True, False, False, reality_input)
     # A_decision=False, B_decision=True, C_decision=True
-    assert "Advanced resource allocation engaged" in aladdin_palantir_decision(phi_val_vlad, False, True, True)
+    assert "Advanced resource allocation engaged" in aladdin_palantir_decision(phi_val_vlad, False, True, True, reality_input)
     # A_decision=False, B_decision=False, C_decision=False
-    assert "Standby - conditions unmet" in aladdin_palantir_decision(phi_val_vlad, False, False, False)
+    assert "Standby - conditions unmet" in aladdin_palantir_decision(phi_val_vlad, False, False, False, reality_input)
 
     # Test case 2: Palaiologos branch (Mid phi, ZrSiS OK)
     phi_val_palaiologos = 0.5
     # A_decision=True, B_decision=False, C_decision=False
-    assert "Palaiologos" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False)
-    assert "Tactical alert" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False)
+    assert "Palaiologos" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False, reality_input)
+    assert "Tactical alert" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False, reality_input)
     # A_decision=False, B_decision=True, C_decision=False
-    assert "Monitoring frontier anomalies" in aladdin_palantir_decision(phi_val_palaiologos, False, True, False)
+    assert "Monitoring frontier anomalies" in aladdin_palantir_decision(phi_val_palaiologos, False, True, False, reality_input)
     # A_decision=False, B_decision=False, C_decision=False
-    assert "Awaiting data" in aladdin_palantir_decision(phi_val_palaiologos, False, False, False)
+    assert "Awaiting data" in aladdin_palantir_decision(phi_val_palaiologos, False, False, False, reality_input)
 
     # Test case 3: Opium-Raj branch (Low phi, ZrSiS OK)
     phi_val_opium = 0.2
-    assert "Opium-Raj" in aladdin_palantir_decision(phi_val_opium, False, False, False)
-    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_opium, False, False, False)
+    assert "Opium-Raj" in aladdin_palantir_decision(phi_val_opium, False, False, False, reality_input)
+    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_opium, False, False, False, reality_input)
 
     # Test case 4: Möbius-Muse branch (ZrSiS Fails, high phi example)
     mocker.patch('psi_codex.codex_catastrophe.zrsis_health', return_value=False)
     # Decision for Möbius-Muse is always "SYSTEM COLLAPSE" if historical_tag indicates it.
-    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_vlad, True, False, False)
-    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_vlad, True, False, False)
+    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_vlad, True, False, False, reality_input)
+    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_vlad, True, False, False, reality_input)
 
     # Test case 5: Möbius-Muse branch (ZrSiS Fails, mid phi example)
-    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False)
-    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False)
+    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False, reality_input)
+    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_palaiologos, True, False, False, reality_input)
 
     # Test case 6: Möbius-Muse branch (ZrSiS Fails, low phi example)
-    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_opium, True, False, False)
-    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_opium, True, False, False)
+    assert "Möbius-Muse" in aladdin_palantir_decision(phi_val_opium, True, False, False, reality_input)
+    assert "SYSTEM COLLAPSE" in aladdin_palantir_decision(phi_val_opium, True, False, False, reality_input)
+
+    # Test case 7: Incoherent reality
+    mocker.patch('psi_codex.codex_catastrophe.zrsis_health', return_value=True)
+    incoherent_reality_input = [-1] * 100
+    assert "Ethical Override Engaged" in aladdin_palantir_decision(phi_val_vlad, True, False, False, incoherent_reality_input)
 
 def test_historical_tag_logic():
     """Test the historical_tag function directly for all branches."""

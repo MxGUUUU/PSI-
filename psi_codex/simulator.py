@@ -55,6 +55,21 @@ def biomarker(x, eps=1e-3):
         return np.inf
     return np.abs(np.cos(x)) / (x + eps)
 
+def complex_math_stuff(thought_strength):
+    """Placeholder for complex quantum calculations."""
+    return np.sin(thought_strength) * 0.1
+
+def when_consciousness_becomes_real(thought_strength, physical_constraints):
+    """
+    Calculates when consciousness becomes powerful enough to change physical reality.
+    """
+    classical_reality = 1.0 + 3 * thought_strength**2
+    quantum_correction = complex_math_stuff(thought_strength)
+    # Ensure physical_constraints is not zero to avoid division by zero
+    casimir_effect = -C / (physical_constraints**4) if physical_constraints != 0 else 0
+    total_reality_strength = classical_reality + quantum_correction + casimir_effect
+    return total_reality_strength
+
 # --- Tron Movement Engine ---
 class TronMovementEngine:
     def __init__(self, grid_size=100, max_speed=0.1):
@@ -311,6 +326,12 @@ class QuantumCognitiveField:
                 if max_julia_mag > 1e-9:
                     julia_influence = self.julia_set_magnitude[idx_j_y, idx_j_x] / max_julia_mag
                     current_psi_copy[i] *= np.exp(1j * julia_influence * 0.01)
+
+        # Calculate reality strength and modulate the psi field
+        thought_strength = np.mean(np.abs(current_psi_copy))
+        physical_constraints = self.eta_E + 0.1 # Add a small constant to avoid division by zero
+        reality_strength = when_consciousness_becomes_real(thought_strength, physical_constraints)
+        current_psi_copy *= (1 + 0.01 * reality_strength)
 
         self.psi = current_psi_copy
         self.tron.move(acceleration_factor=max(0, 1.0 - self.eta_E))
