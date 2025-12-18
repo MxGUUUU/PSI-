@@ -2,6 +2,7 @@ import math
 import numpy as np
 import requests
 from rich import print
+from .reality_compiler import RealityCompiler
 
 # --- Ψ-Codex Constants ---
 GOLDEN_RATIO = (1 + math.sqrt(5)) / 2  # φ
@@ -50,10 +51,20 @@ def historical_tag(phi: float, zrsis_ok: bool) -> str:
     else:
         return "[bold #7A6F45]Opium-Raj[/] (Entropy Drift)"
 
-def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool) -> str:
-    """AI decision logic with ZrSiS stability enforcement"""
+def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool, reality_input: list) -> str:
+    """AI decision logic with ZrSiS stability enforcement and Reality Compiler integration"""
+    reality_compiler = RealityCompiler()
+    processed_reality = reality_compiler.process_reality(reality_input)
+
+    # A simple check for coherence based on the processed reality.
+    # In a real scenario, this would be a more sophisticated metric.
+    is_coherent = np.sum(np.real(processed_reality)) > 0 if len(processed_reality) > 0 else False
+
     current_zrsis_ok = zrsis_health()
     tag = historical_tag(phi, current_zrsis_ok)
+
+    if not is_coherent:
+        return f"{tag}: Reality Incoherent - Ethical Override Engaged"
 
     if phi > 0.8 and current_zrsis_ok:
         if A_decision or (B_decision and C_decision):
@@ -83,5 +94,7 @@ if __name__ == "__main__":
     print("\n--- Running Test Cases (live zrsis_health will be called by aladdin_palantir_decision) ---")
     for X_val, A_case, B_case, C_case in test_cases:
         phi_val = phi_of_X(X_val)
-        decision = aladdin_palantir_decision(phi_val, A_case, B_case, C_case)
+        # Create a sample reality_input for the demonstration
+        reality_input = list(np.sin(np.linspace(0, 2 * np.pi, 100)) * X_val)
+        decision = aladdin_palantir_decision(phi_val, A_case, B_case, C_case, reality_input)
         print(f"\nΦ(X={X_val}) = {phi_val:.3f} → {decision}")
