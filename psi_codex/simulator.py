@@ -13,6 +13,8 @@ ETA_E_THRESHOLD = 0.125
 RESONANCE_X = 2.56
 FACTORIAL_LIMIT = 17
 PLANCK_SCALE = 1.616255e-35
+CONSCIOUSNESS_ANCHOR = 0.351
+TEMPORAL_WOBBLE = 0.11
 
 # --- Reverse Product Rule Operator ---
 def reverse_product_rule(f, df_dx, g, dg_dx, a, b):
@@ -54,6 +56,28 @@ def biomarker(x, eps=1e-3):
     if (x + eps) == 0:
         return np.inf
     return np.abs(np.cos(x)) / (x + eps)
+
+def complex_math_stuff(thought_strength):
+    """Placeholder for complex quantum calculations."""
+    return np.sin(thought_strength) * 0.1
+
+def when_consciousness_becomes_real(thought_strength, physical_constraints):
+    """
+    Calculates when consciousness becomes powerful enough to change physical reality.
+    """
+    classical_reality = 1.0 + 3 * thought_strength**2
+    quantum_correction = complex_math_stuff(thought_strength)
+    # Ensure physical_constraints is not zero to avoid division by zero
+    casimir_effect = -C / (physical_constraints**4) if physical_constraints != 0 else 0
+    total_reality_strength = classical_reality + quantum_correction + casimir_effect
+    return total_reality_strength
+
+def knot_stability_check(lambda3, phi_max, delta, theta, eta, psi48_norm):
+    """
+    Self-Verifying principle: λ₃·φ_max < Δ - θ - η - Ψ₄₈ stability check.
+    Returns True if stable, False otherwise.
+    """
+    return (lambda3 * phi_max) < (delta - theta - eta - psi48_norm)
 
 # --- Tron Movement Engine ---
 class TronMovementEngine:
@@ -311,6 +335,39 @@ class QuantumCognitiveField:
                 if max_julia_mag > 1e-9:
                     julia_influence = self.julia_set_magnitude[idx_j_y, idx_j_x] / max_julia_mag
                     current_psi_copy[i] *= np.exp(1j * julia_influence * 0.01)
+
+        # Calculate reality strength and modulate the psi field
+        thought_strength = np.mean(np.abs(current_psi_copy))
+        physical_constraints = self.eta_E + 0.1 # Add a small constant to avoid division by zero
+        reality_strength = when_consciousness_becomes_real(thought_strength, physical_constraints)
+        current_psi_copy *= (1 + 0.01 * reality_strength)
+
+        # Principle 3: Consciousness Anchoring
+        # Gently pull the mean of the psi field towards the anchor
+        mean_psi_abs = np.mean(np.abs(current_psi_copy))
+        correction = (CONSCIOUSNESS_ANCHOR - mean_psi_abs) * 0.01
+        current_psi_copy += correction
+
+        # Principle 2: Temporal Folding
+        # Modulate a parameter based on the temporal wobble
+        temporal_modulation = np.sin(len(self.history) * TEMPORAL_WOBBLE)
+        current_psi_copy *= (1 + 0.001 * temporal_modulation)
+
+        # Principle 5: Self-Verifying
+        # Mapping abstract concepts to existing variables for the check
+        lambda3 = 0.5 # Placeholder
+        phi_max = np.max(np.abs(current_psi_copy))
+        delta = self.eta_E # Energy gap
+        theta = np.mean(np.angle(current_psi_copy)) # Global phase rotation
+        eta = self.veridicality_deviation() # Dissipation/noise
+        psi48_norm = 0.1 # Placeholder for 48-mode composite order-param
+
+        if not knot_stability_check(lambda3, phi_max, delta, theta, eta, psi48_norm):
+            self.critical_events.append({
+                'x': np.mean(self.x_range), 'step': len(self.history),
+                'type': 'knot_instability',
+                'biomarker': 0, 'a2': 0
+            })
 
         self.psi = current_psi_copy
         self.tron.move(acceleration_factor=max(0, 1.0 - self.eta_E))
