@@ -1,0 +1,10 @@
+numpy
+scipy
+matplotlib
+fpdf
+pytest
+PyPDF2
+pytest-mock
+rich
+requests
+PyYAML

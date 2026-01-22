@@ -1,0 +1,19 @@
+simulation:
+  x_min: 0.1
+  x_max: 5.0
+  x_steps: 100
+  lambda_3: 1.1
+  epsilon: 0.05
+  temperature_T: 0.5
+  phi_val: 1.618
+  U_val: 0.1
+  integration: true
+  simulation_epochs: 200
+metadata:
+  author: "Synthetic Dialectics Unit"
+  intent: "Test boundary of coherence under recursive strain"
+  generated_on: "2025-06-08"
+pytest:
+  args: ["psi_codex/"]
+  unittest_enabled: false
+  pytest_enabled: true
