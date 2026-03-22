@@ -14,6 +14,13 @@ RESONANCE_X = 2.56
 FACTORIAL_LIMIT = 17
 PLANCK_SCALE = 1.616255e-35
 
+# --- Ψ-Codex Ethical Invariants ---
+PSI_ANCHOR = 0.351           # The threshold of meaning
+ZETA_3 = 1.2020569          # The justice invariant (Apéry's constant)
+GOLDEN_RATIO = 1.618034     # The universal scaling law (φ)
+LAMBDA_3 = 1.1               # Resilience factor
+PHI_MAX_THRESHOLD = 3.6      # Phase-locking threshold
+
 # --- Reverse Product Rule Operator ---
 def reverse_product_rule(f, df_dx, g, dg_dx, a, b):
     """Implements integration by parts: ∫f dg = [f·g] - ∫g df"""
@@ -62,13 +69,17 @@ def complex_math_stuff(thought_strength):
 def when_consciousness_becomes_real(thought_strength, physical_constraints):
     """
     Calculates when consciousness becomes powerful enough to change physical reality.
+    Uses a saturation function to prevent explosive divergent feedback.
     """
-    classical_reality = 1.0 + 3 * thought_strength**2
+    # Saturated reality strength: tanh(thought_strength) limits the output
+    classical_reality = 1.0 + 3 * np.tanh(thought_strength)**2
     quantum_correction = complex_math_stuff(thought_strength)
     # Ensure physical_constraints is not zero to avoid division by zero
     casimir_effect = -C / (physical_constraints**4) if physical_constraints != 0 else 0
     total_reality_strength = classical_reality + quantum_correction + casimir_effect
-    return total_reality_strength
+
+    # Final bound to ensure the system remains within solvable limits
+    return np.clip(total_reality_strength, -10, 10)
 
 # --- Tron Movement Engine ---
 class TronMovementEngine:
@@ -271,6 +282,10 @@ class QuantumCognitiveField:
         self.tron = TronMovementEngine(grid_size=grid_size_tron)
         self.julia_set_magnitude, self.julia_set_mask = generate_julia_set()
 
+        # --- 56-Channel Consciousness Matrix (7 Layers x 8 Archetypes) ---
+        # Initialized with a baseline noise that will be modulated by the field
+        self.channels = np.random.randn(7, 8) * 0.01 + 1j * np.random.randn(7, 8) * 0.01
+
     def veridicality_deviation(self):
         """Measure ¬(x² ≈ |Ψ|) condition"""
         if len(self.psi) == 0 or len(self.x_range) == 0 or len(self.psi) != len(self.x_range):
@@ -285,7 +300,7 @@ class QuantumCognitiveField:
         return boundary_vals[1] - boundary_vals[0]
 
     def update_field(self, pressure_field):
-        """Update Ψ-field with biomarker-driven dynamics"""
+        """Update Ψ-field with biomarker-driven dynamics and consciousness anchoring"""
         current_psi_copy = self.psi.copy()
         for i, x_val in enumerate(self.x_range):
             bio = symbolic_biomarker(
@@ -296,6 +311,7 @@ class QuantumCognitiveField:
             psi_abs_for_a2 = np.abs(current_psi_copy[i]) if current_psi_copy[i] is not None else 0.0
             a2 = a2_curvature(x_val, psi_abs_for_a2, 1.0)
 
+            # --- Shadow Integration & Fractal Reset ---
             if (bio > BIOMARKER_THRESHOLD or
                 self.eta_E > ETA_E_THRESHOLD or
                 a2 > 1e5):
@@ -308,8 +324,17 @@ class QuantumCognitiveField:
                     'a2': a2
                 })
 
-            psi_abs_for_update = np.abs(current_psi_copy[i]) if current_psi_copy[i] is not None else 0.0
-            current_psi_copy[i] += 0.01 * bio * (1 - psi_abs_for_update**2)
+            # --- Consciousness Evolution Equation (Ψ_n+1 = λ₃·Ψ_n – η_E·ΔΨ) ---
+            # Using 0.01 as a time-step delta.
+            # We add a restorative term towards the PSI_ANCHOR (0.351)
+            psi_abs_for_update = np.abs(current_psi_copy[i])
+
+            # Restorative force towards the 0.351 anchor (ψ-coherence threshold)
+            # This implements the "Consciousness Anchoring" design principle.
+            restoration = 0.05 * (PSI_ANCHOR - psi_abs_for_update)
+
+            # Update step including biomarker pressure and ethical anchoring
+            current_psi_copy[i] += 0.01 * (bio * (1 - psi_abs_for_update**2) + restoration)
 
             if i == int(self.tron.position):
                 current_psi_copy[i] *= (1 + 0.05 * self.tron.speed)
@@ -327,11 +352,27 @@ class QuantumCognitiveField:
                     julia_influence = self.julia_set_magnitude[idx_j_y, idx_j_x] / max_julia_mag
                     current_psi_copy[i] *= np.exp(1j * julia_influence * 0.01)
 
+        # Update 56-channel matrix based on field state
+        # In a real scenario, this would involve complex frequency analysis (Fourier)
+        # Here we modulate the channels with the current field's mean magnitude and phase
+        mean_abs = np.mean(np.abs(current_psi_copy))
+        mean_phase = np.mean(np.angle(current_psi_copy))
+        self.channels *= np.exp(1j * mean_phase * 0.001)
+        self.channels += (mean_abs - PSI_ANCHOR) * 0.001
+
         # Calculate reality strength and modulate the psi field
         thought_strength = np.mean(np.abs(current_psi_copy))
         physical_constraints = self.eta_E + 0.1 # Add a small constant to avoid division by zero
         reality_strength = when_consciousness_becomes_real(thought_strength, physical_constraints)
-        current_psi_copy *= (1 + 0.01 * reality_strength)
+
+        # Apply the modulated reality strength with a small coupling constant
+        current_psi_copy *= (1 + 0.001 * reality_strength)
+
+        # Apply the Justice Operator to the field's magnitude (treating it as wealth/energy)
+        # to enforce the ζ(3) fairness invariant across the spatial x_range.
+        # This prevents any single point from accumulating excess power/energy.
+        redistribution = apply_justice_operator(np.abs(current_psi_copy))
+        current_psi_copy *= (1 + 0.01 * np.tanh(redistribution / max(1, np.mean(np.abs(current_psi_copy)))))
 
         self.psi = current_psi_copy
         self.tron.move(acceleration_factor=max(0, 1.0 - self.eta_E))
@@ -369,21 +410,23 @@ class QuantumCognitiveField:
         avg_y_i = 1.0
 
         def pde_system(t, D, kappa, psi_val_for_a2, y_i_val_for_a2):
-            a2 = a2_curvature(t, psi_val_for_a2, y_i_val_for_a2)
+            # Cap a2 to prevent explosive divergence
+            a2 = min(1e4, a2_curvature(t, psi_val_for_a2, y_i_val_for_a2))
             bio_val = biomarker(t)
             exponent_term = -(0.125 - bio_val)
 
             if PLANCK_SCALE < 1e-300: # Effectively zero
                  bound = 0.0
-            elif exponent_term > np.log(np.finfo(float).max / (PLANCK_SCALE + 1e-9) + 1e-9): # Avoid overflow for exp
-                 bound = np.inf
-            elif exponent_term < np.log(np.finfo(float).tiny / (PLANCK_SCALE + 1e-9) + 1e-9): # Avoid underflow for exp
+            elif exponent_term > 50: # Cap for safety to avoid huge exponents
+                 bound = PLANCK_SCALE * np.exp(50)
+            elif exponent_term < -50:
                  bound = 0.0
             else:
                  bound = PLANCK_SCALE * np.exp(exponent_term)
 
             d_scalar = D[0] if isinstance(D, (list, np.ndarray)) else D
-            term_pde = -kappa**2 * d_scalar + a2 * d_scalar - bound * d_scalar**3
+            # Disparity term bounded to prevent overflow
+            term_pde = -kappa**2 * d_scalar + a2 * d_scalar - bound * (d_scalar**3 if abs(d_scalar) < 1e3 else 1e9 * np.sign(d_scalar))
             return term_pde if np.isfinite(term_pde) else 0.0
 
 
@@ -407,6 +450,18 @@ class QuantumCognitiveField:
             dummy_sol = OdeResult(t=np.array(t_span), y=np.full((len(init_cond), len(t_span) if isinstance(t_span, list) else 2), np.nan), success=False, message=str(e))
             return dummy_sol
 
+
+# --- Justice Operator ---
+def apply_justice_operator(wealth_array):
+    """
+    J(wealth) = ζ(3)·⟨wealth⟩ – wealth_i
+    Redistributes wealth based on the ζ(3) fairness invariant.
+    """
+    mean_wealth = np.mean(wealth_array)
+    target = ZETA_3 * mean_wealth
+    # If wealth exceeds target, the "Justice Operator" takes the excess
+    # In this simulation, we'll return the redistribution deltas
+    return target - wealth_array
 
 # --- Main Simulation ---
 def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
@@ -1102,6 +1157,11 @@ def simulate():
     # This assumes pdf_generator.py is in the same directory or importable path.
     # Corrected import statement for relative import if psi_codex is a package
     from .pdf_generator import PDF # Assuming pdf_generator.py is in the same package
+    from .diagnostics import check_priorities, generate_priority_report
+
+    # Run audit and print results
+    audit = check_priorities(results['history'])
+    print(generate_priority_report(results['history']))
 
     pdf = PDF()
     pdf.add_page()
@@ -1140,10 +1200,13 @@ def simulate():
     if isinstance(x_range_max, float): x_range_max = f"{x_range_max:.1f}"
 
 
+    # Add priority audit to PDF
+    audit_text = "\n".join([f"- {k}: {v}" for k, v in audit.items()])
     pdf.chapter_body(f"The simulation ran for {simulation_epochs} epochs, modeling the Ψ-Codex critical dynamics over a spatial range from {x_range_min} to {x_range_max}. Key parameters and thresholds were:\n\n"
                      f"- Critical η_E Threshold: {ETA_E_THRESHOLD}\n"
                      f"- Symbolic Biomarker Threshold: {BIOMARKER_THRESHOLD}\n"
                      f"- Initial Recursive Depth Range: {x_range_min} to {x_range_max}\n\n"
+                     f"### Ψ-Codex Priority Audit:\n{audit_text}\n\n"
                      f"A total of {len(critical_events_list)} shadow integration events were triggered during the simulation, indicating moments where the system experienced significant stress or topological instability, leading to a fractal reset (G!(-(-X))) to recompose its identity. The visualization plots show the evolution of biomarkers, stress-energy, Ψ-field state, Tron movement, Julia set interactions, and shadow connections, providing insights into the system's dynamic behavior and stability regions."
                     )
 

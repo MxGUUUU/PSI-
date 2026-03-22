@@ -29,7 +29,7 @@ class PDF(FPDF):
             "Ψ": "Psi", "Δ": "Delta", "φ": "phi", "λ": "lambda", "⊗": "x",
             "η": "eta", "ε": "epsilon", "π": "pi", "→": "->", "′": "'",
             "≥": ">=", "≤": "<=", "≠": "!=", "∞": "infinity", "α": "alpha",
-            "β": "beta", "γ": "gamma", # Greek letters
+            "β": "beta", "γ": "gamma", "ψ": "psi", # Greek letters
             "₄": "4", "₈": "8", "₃": "3", # Subscripts
             "⋅": ".", "²": "^2", "³": "^3", "⁵": "^5", # Math symbols, using ^ for exponents
             "−": "-", "⁄": "/", # Minus sign and slash
