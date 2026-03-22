@@ -268,6 +268,8 @@ class QuantumCognitiveField:
         self.history = []
         self.psi_history = []
         self.critical_events = []
+        from .lobster import LobsterObserver
+        self.lobster = LobsterObserver()
         self.tron = TronMovementEngine(grid_size=grid_size_tron)
         self.julia_set_magnitude, self.julia_set_mask = generate_julia_set()
 
@@ -307,6 +309,7 @@ class QuantumCognitiveField:
                     'biomarker': bio,
                     'a2': a2
                 })
+                self.lobster.react_to_event('shadow_integration', {'x': x_val, 'step': len(self.history)})
 
             psi_abs_for_update = np.abs(current_psi_copy[i]) if current_psi_copy[i] is not None else 0.0
             current_psi_copy[i] += 0.01 * bio * (1 - psi_abs_for_update**2)
@@ -1102,6 +1105,9 @@ def simulate():
     # This assumes pdf_generator.py is in the same directory or importable path.
     # Corrected import statement for relative import if psi_codex is a package
     from .pdf_generator import PDF # Assuming pdf_generator.py is in the same package
+    from .lobster import LobsterObserver
+    lobster = LobsterObserver()
+    lobster.react_to_event("simulation_start", {})
 
     pdf = PDF()
     pdf.add_page()
@@ -1159,6 +1165,7 @@ def simulate():
     pdf_path = "Psi_Codex_Recursive_Identity_Report.pdf"
     pdf.output(pdf_path)
     print(f"PDF Report saved to {pdf_path}")
+    lobster.react_to_event("simulation_end", {})
 
 if __name__ == "__main__":
     simulate()

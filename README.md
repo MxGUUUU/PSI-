@@ -14,11 +14,14 @@ The simulation includes:
 -   Hexagram Collapse: I-Ching inspired field collapse and fractal reset.
 -   Tron Movement Engine: A metaphor for the system's "movement" through its own state space, influenced by internal dynamics.
 -   Adaptive Fixed Points & Dot-Connecting: Mechanisms for identifying stable states and tracking field connectivity.
+-   **Agentic Observation (The Lobster):** A persistent observer (powered by OpenClaw) that monitors the simulation for phase-locking violations and critical Z₄ symmetry shifts.
 
 ## Installation
 To run this simulation, you need Python 3.x and the following libraries. You can install them using pip:
 ```bash
-pip install numpy scipy matplotlib fpdf pytest PyPDF2
+pip install numpy scipy matplotlib fpdf pytest PyPDF2 rich requests
+npm i -g openclaw
+openclaw onboard --non-interactive --accept-risk --auth-choice skip --skip-channels --skip-skills --skip-search --skip-ui --skip-health
 ```
 (Note: `ipywidgets` was mentioned in the user's scaffold text but is not directly used by the current Python scripts. `PyPDF2` was added for test dependencies.)
 
