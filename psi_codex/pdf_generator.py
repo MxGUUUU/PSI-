@@ -29,8 +29,9 @@ class PDF(FPDF):
             "Ψ": "Psi", "Δ": "Delta", "φ": "phi", "λ": "lambda", "⊗": "x",
             "η": "eta", "ε": "epsilon", "π": "pi", "→": "->", "′": "'",
             "≥": ">=", "≤": "<=", "≠": "!=", "∞": "infinity", "α": "alpha",
+            "Λ": "Lambda", # Large Lambda
             "β": "beta", "γ": "gamma", "ψ": "psi", # Greek letters
-            "₄": "4", "₈": "8", "₃": "3", # Subscripts
+            "₄": "4", "₈": "8", "₃": "3", "₀": "0", "₁": "1", # Subscripts
             "⋅": ".", "²": "^2", "³": "^3", "⁵": "^5", # Math symbols, using ^ for exponents
             "−": "-", "⁄": "/", # Minus sign and slash
             "⁰˙⁰⁵⁷": "0.057", "⁻¹⁄³": "-1/3", # Specific values
@@ -44,6 +45,7 @@ class PDF(FPDF):
             "—": "-", # Em-dash (U+2014)
             "–": "-", # En-dash (U+2013)
             "’": "'", # Right single quotation mark (U+2019)
+            "永劫回帰完成": "Eternal Recurrence Complete",
             # "~": "", # Decided to keep tilde as it's a common character.
         }
         # Ensure text is a string

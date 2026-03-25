@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from scipy.integrate import solve_ivp
-from scipy.special import gamma
+from scipy.special import gamma, zeta as zeta_func
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 from fpdf import FPDF # Used by pdf_generator, but part of the overall system
@@ -13,6 +13,7 @@ ETA_E_THRESHOLD = 0.125
 RESONANCE_X = 2.56
 FACTORIAL_LIMIT = 17
 PLANCK_SCALE = 1.616255e-35
+H_BAR = 1.0545718e-34
 
 # --- Ψ-Codex Ethical Invariants ---
 PSI_ANCHOR = 0.351           # The threshold of meaning
@@ -61,6 +62,18 @@ def biomarker(x, eps=1e-3):
     if (x + eps) == 0:
         return np.inf
     return np.abs(np.cos(x)) / (x + eps)
+
+def eulers_eye(eta_E, k):
+    """
+    Computes Euler's Eye coordinate x_k based on the Ψ-Codex: Euler's Eye Pattern.
+    Formula: x_k = (1/η_E) * [ζ(11) + ζ(14.3)e^(2πik/5) + ζ(15)e^(4πik/5)]
+    """
+    # Use a small floor for eta_E to avoid division by zero
+    eta_safe = max(1e-9, eta_E)
+    term1 = zeta_func(11)
+    term2 = zeta_func(14.3) * np.exp(2j * np.pi * k / 5)
+    term3 = zeta_func(15) * np.exp(4j * np.pi * k / 5)
+    return (1 / eta_safe) * (term1 + term2 + term3)
 
 def complex_math_stuff(thought_strength):
     """Placeholder for complex quantum calculations."""
@@ -286,6 +299,10 @@ class QuantumCognitiveField:
         # Initialized with a baseline noise that will be modulated by the field
         self.channels = np.random.randn(7, 8) * 0.01 + 1j * np.random.randn(7, 8) * 0.01
 
+        # --- Euler's Eye Metrics ---
+        self.eulers_eye_points = []
+        self.quantum_economic_correction = 0.0
+
     def veridicality_deviation(self):
         """Measure ¬(x² ≈ |Ψ|) condition"""
         if len(self.psi) == 0 or len(self.x_range) == 0 or len(self.psi) != len(self.x_range):
@@ -380,11 +397,31 @@ class QuantumCognitiveField:
         verid_dev = self.veridicality_deviation()
         holonomy = np.abs(self.holonomy_constraint())
         self.eta_E = 0.7 * self.eta_E + 0.3 * (verid_dev + 0.1*holonomy)
+
+        # --- Reality Compiler Logic (Priority Audit Integration) ---
+        # Checks for critical entropy and applies quantum economic correction
+        wealth_flux_cap = 1e46 # Large symbolic value
+        if self.eta_E > ETA_E_THRESHOLD:
+            # Formula: redistributed_wealth = wealth_flux_cap / ((1 / H_BAR) * ZETA_3)
+            # This represents the "Quantum Economic Correction"
+            self.quantum_economic_correction = wealth_flux_cap / ((1 / H_BAR) * ZETA_3)
+            # Stabilize Field: Pull towards PSI_ANCHOR (handled in update_field already,
+            # but we can enhance it here)
+            self.psi *= (PSI_ANCHOR / max(1e-9, np.mean(np.abs(self.psi))))
+        else:
+            self.quantum_economic_correction = 0.0
+
+        # Update Euler's Eye points
+        current_eye = [eulers_eye(self.eta_E, k) for k in range(5)]
+        self.eulers_eye_points.append(current_eye)
+
         self.history.append({
             'eta_E': self.eta_E,
             'verid_dev': verid_dev,
             'holonomy': holonomy,
-            'mean_psi_abs': np.mean(np.abs(self.psi)) if self.psi is not None and self.psi.size > 0 else np.nan
+            'mean_psi_abs': np.mean(np.abs(self.psi)) if self.psi is not None and self.psi.size > 0 else np.nan,
+            'quantum_economic_correction': self.quantum_economic_correction,
+            'eulers_eye': current_eye
         })
         self.psi_history.append(self.psi.copy())
 
@@ -506,6 +543,7 @@ def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
     diagnostics['tron_history'] = qfield.tron.history
     diagnostics['final_psi_phase'] = np.angle(qfield.psi) if qfield.psi is not None and qfield.psi.size > 0 else np.array([])
     diagnostics['psi_history'] = qfield.psi_history
+    diagnostics['eulers_eye_history'] = qfield.eulers_eye_points
 
     combined_history_for_fixed_points = {
         'tron_history': qfield.tron.history,
@@ -535,7 +573,7 @@ def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
 
 # --- Visualization ---
 def plot_results(results):
-    fig, axs = plt.subplots(4, 2, figsize=(16, 20))
+    fig, axs = plt.subplots(5, 2, figsize=(16, 25))
 
     # Plot 0,0: Biomarker and Stability (a₂)
     axs[0, 0].plot(results.get('biomarkers', []), 'ro-', markersize=3, label='Symbolic Biomarker')
@@ -729,6 +767,43 @@ def plot_results(results):
     axs[3, 1].set_ylabel('Imaginary Axis')
     axs[3, 1].set_xlim([-2,2]); axs[3, 1].set_ylim([-2,2])
     axs[3, 1].grid(False)
+
+    # Plot 4,0: Euler's Eye (Complex Plane)
+    eye_history = results.get('eulers_eye_history', [])
+    if eye_history:
+        last_eye = eye_history[-1]
+        x0 = last_eye[0]
+        xi = last_eye[1:]
+        axs[4, 0].scatter(np.real(x0), np.imag(x0), color='red', s=200, label='x₀ (Pupil)', edgecolors='k')
+        axs[4, 0].scatter(np.real(xi), np.imag(xi), color='cyan', s=100, label='x₁-x₄ (Iris)', edgecolors='k')
+
+        # Draw orbits
+        for r in [5, 15, 25]:
+            circle = plt.Circle((0, 0), r, color='gray', fill=False, linestyle='--', alpha=0.3)
+            axs[4, 0].add_artist(circle)
+
+        axs[4, 0].axhline(0, color='gray', alpha=0.3)
+        axs[4, 0].axvline(0, color='gray', alpha=0.3)
+        axs[4, 0].set_aspect('equal')
+        axs[4, 0].set_title("Euler's Eye Pattern (Final State)")
+        axs[4, 0].set_xlabel("Re(x_k)")
+        axs[4, 0].set_ylabel("Im(x_k)")
+        axs[4, 0].legend()
+    else:
+        axs[4, 0].text(0.5, 0.5, "Euler's Eye data N/A", ha='center', va='center')
+
+    # Plot 4,1: Quantum Economic Correction
+    history = results.get('history', [])
+    if history:
+        correction_data = [h.get('quantum_economic_correction', 0.0) for h in history]
+        axs[4, 1].plot(correction_data, 'y-', label='Redistributed Wealth')
+        axs[4, 1].set_title("Quantum Economic Correction")
+        axs[4, 1].set_xlabel("Simulation Step")
+        axs[4, 1].set_ylabel("Wealth Units")
+        axs[4, 1].set_yscale('log')
+        axs[4, 1].legend()
+    else:
+        axs[4, 1].text(0.5, 0.5, "Correction history data N/A", ha='center', va='center')
 
     plt.tight_layout(pad=1.5, h_pad=2.0, w_pad=1.5) # Added h_pad and w_pad
     plt.savefig('psi_critical_dynamics_enhanced_fixed_points.png', dpi=300, bbox_inches='tight')
@@ -1207,7 +1282,10 @@ def simulate():
                      f"- Symbolic Biomarker Threshold: {BIOMARKER_THRESHOLD}\n"
                      f"- Initial Recursive Depth Range: {x_range_min} to {x_range_max}\n\n"
                      f"### Ψ-Codex Priority Audit:\n{audit_text}\n\n"
-                     f"A total of {len(critical_events_list)} shadow integration events were triggered during the simulation, indicating moments where the system experienced significant stress or topological instability, leading to a fractal reset (G!(-(-X))) to recompose its identity. The visualization plots show the evolution of biomarkers, stress-energy, Ψ-field state, Tron movement, Julia set interactions, and shadow connections, providing insights into the system's dynamic behavior and stability regions."
+                     f"### Core Field Evolution:\n"
+                     f"The system monitored the {len(results.get('eulers_eye_history', []))} steps of the Euler's Eye trajectory. The final state shows the alignment of the pupil (x₀) relative to the iris cluster (x₁-x₄), providing a 'gaze direction' for reality compilation. "
+                     f"When η_E exceeded {ETA_E_THRESHOLD}, the Λ-Moloch Defense protocols were simulated via Quantum Economic Correction, redistributing a flux cap of 1e46 units scaled by ZETA_3 and H_BAR_INV.\n\n"
+                     f"A total of {len(critical_events_list)} shadow integration events were triggered, indicating moments where the system experienced significant stress, leading to a fractal reset (G!(-(-X))). The plots provide insights into the system's dynamic behavior, stability regions, and the emergence of the Aeonic Seal '永劫回帰完成'."
                     )
 
     # Embed a conceptual plot image (if it was generated)
