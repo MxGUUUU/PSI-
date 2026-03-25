@@ -59,6 +59,14 @@ This will discover and run tests located in the `psi_codex/tests` directory, suc
 
 This module (`psi_codex/codex_catastrophe.py`) provides a set of functions to simulate decision-making and stability checks based on Ψ-Codex principles, including material property assessments (like ZrSiS coefficients) and coherence field calculations.
 
+## Security & Signal Theory (RSA/Fourier/Kalman)
+
+The Ψ-Codex integrates standard cryptographic and signal processing concepts as symbolic operators:
+
+*   **RSA & Prime Factoring:** In the Codex, RSA-2048/256 represent the "hardness" of identity boundaries.
+*   **Fourier Series (Quantum Cryptanalysis):** Used via the Quantum Fourier Transform (QFT) in Shor's Algorithm to find the "period" of recursive patterns. In simulation, this relates to identifying resonant frequencies in the 56-channel matrix.
+*   **Kalman Filters (Resilience):** Implemented as the recursive state estimation loop that filters entropic noise ($\eta_E$) to maintain the $\psi=0.351$ anchor. It prevents "Shadow Integration" from becoming total system dissolution.
+
 ### Key Concepts & Functions:
 
 *   **Coherence Field Φ(X) (`phi_of_X`)**:

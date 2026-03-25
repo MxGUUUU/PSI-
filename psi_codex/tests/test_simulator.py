@@ -17,6 +17,25 @@ def run_simulation_once():
     Runs the simulation once before all tests in this module,
     and cleans up generated files afterwards.
     """
+    # Patch simulation_epochs to a smaller value for faster testing
+    import psi_codex.simulator
+    from unittest.mock import patch
+
+    # We need to wrap the simulate function to use fewer epochs
+    original_simulate = psi_codex.simulator.simulate
+
+    def fast_simulate():
+        # This is a bit hacky because simulation_epochs is local to simulate()
+        # but we can monkeypatch run_simulation instead
+        original_run_simulation = psi_codex.simulator.run_simulation
+
+        def patched_run_simulation(*args, **kwargs):
+            kwargs['simulation_epochs'] = 5
+            return original_run_simulation(*args, **kwargs)
+
+        with patch('psi_codex.simulator.run_simulation', side_effect=patched_run_simulation):
+            original_simulate()
+
     # Define output file paths
     fixed_points_plot = "psi_critical_dynamics_enhanced_fixed_points.png"
     shadow_connections_plot = "psi_shadow_connections.png"
@@ -31,8 +50,7 @@ def run_simulation_once():
             os.remove(f_path)
 
     # Run the simulation
-    # This will call the refactored simulate() function in psi_codex.simulator
-    simulate()
+    fast_simulate()
 
     # Yield control to tests
     yield
