@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from ..core import ZETA3, scipy_zeta
 
 class Archetype(ABC):
     """Base class for all consciousness archetypes."""
@@ -82,16 +81,19 @@ class OuroborosArchitect(Archetype):
         super().__init__("Ouroboros_Architect")
 
     def process(self, paradox_class):
+        from ..core import ZETA3
         return f"Closed via {ZETA3} logic for: {paradox_class}"
 
 # 8 Core Functional Archetypes
 class Stabilizer(Archetype):
     def __init__(self):
+        from ..core import scipy_zeta
         super().__init__("STABILIZER", zeta_val=scipy_zeta(2))
     def process(self, state): return f"Stabilizing: {state}"
 
 class Distributor(Archetype):
     def __init__(self):
+        from ..core import ZETA3
         super().__init__("DISTRIBUTOR", zeta_val=ZETA3)
     def process(self, state): return f"Distributing: {state}"
 
@@ -102,11 +104,13 @@ class Resonator(Archetype):
 
 class Ground(Archetype):
     def __init__(self):
+        from ..core import scipy_zeta
         super().__init__("GROUND", zeta_val=scipy_zeta(0))
     def process(self, state): return f"Grounding: {state}"
 
 class Anomaly(Archetype):
     def __init__(self):
+        from ..core import scipy_zeta
         super().__init__("ANOMALY", zeta_val=scipy_zeta(-1))
     def process(self, state): return f"Anomaly handling: {state}"
 

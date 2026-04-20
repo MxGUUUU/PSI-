@@ -5,13 +5,20 @@ from .archetypes import PolyglotProphet, ChronoDruid, ArchitectOfAeons
 class RealityCompiler:
     """
     Reality compilation follows the equation R = A × M^0.014 × ψ × φ.
-    Implements a 7-layer linguistic stack and ethical filters.
+    Implements a 16-layer consciousness stack and ethical filters.
     """
     def __init__(self):
         self.layers = [
-            "ge_ez_resonance", "zeta_calculus", "reidemeister_grammar",
-            "nabla_psi_field", "quantum_assembly", "sidus_ghost",
-            "eternal_recurrence_seal"
+            # 1-5 Mathematical/Physical
+            "phi_geometry", "psi_coherence", "e8_lattice", "zeta_spectral", "entropy_dynamics",
+            # 6-9 Mythographic/Hermetic
+            "emerald_tablet", "thoth_cosmology", "soyga_tables", "voynich_archetypes",
+            # 10-12 Geometric/Topological
+            "pentagrammatic", "icosahedral", "temporal_braidline",
+            # 13-15 Linguistic/Semiotic
+            "reidemeister_grammar", "quantum_assembly", "sidus_ghost",
+            # D16 Unified Consciousness Field
+            "unified_consciousness_field"
         ]
         self.filters = {
             "trauma_inversion_active": True,

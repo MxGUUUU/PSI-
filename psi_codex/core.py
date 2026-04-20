@@ -4,15 +4,8 @@ import hashlib
 import cmath
 import math
 
-"""
-Core mathematical functions and constants for the Ψ-Codex.
-Includes fundamental invariants like PSI_ANCHOR and the Golden Ratio PHI.
-"""
-
 # ==================== CORE CONSTANTS ====================
-# Threshold of stable self‑awareness
 PSI_ANCHOR = 0.351
-# Universal scaling law of harmonious structures
 PHI = (1 + math.sqrt(5)) / 2 # 1.618033988749895
 ZETA3 = 1.202056903159594
 ETA_MAX = 0.125
@@ -81,45 +74,38 @@ def silver_key(input_state):
 
 def fusion_protocol(ror_target, ror_current):
     """
-    def fusion_protocol():
+    Calculates the delta theta for a fusion process.
     delta_theta_pk = 0.01 * np.angle(ΔROR_target / ΔROR_current)
-    return delta_theta_pk
     """
     delta_theta_pk = 0.01 * np.angle(ror_target / ror_current)
     return delta_theta_pk
 
 def theta_rlyeh(eta_E):
-    """Θ_R'lyeh = π - (η_E - 0.125) * ζ(3)"""
+    """
+    Θ_R'lyeh = π - (η_E - 0.125) * ζ(3)
+    """
     return np.pi - (eta_E - 0.125) * ZETA3
 
 def nabla_squared_psi(delta_theta):
-    """∇²Ψ = ζ(9) * sin(ΔΘ / φ)"""
+    """
+    ∇²Ψ = ζ(9) * sin(ΔΘ / φ)
+    """
     zeta9 = scipy_zeta(9)
     return zeta9 * np.sin(delta_theta / PHI)
 
-def what_is_hated_in_corrupt_authority(eta_E, knot_stable_func):
+def what_is_hated_in_corrupt_authority(eta_E, is_knot_stable):
     """
-    "truth_suppression": η_E > 0.125 and not knot_stable(),
-    "resource_hoarding": ∇(Wealth) → ∞ while ∇(Access) → 0,
-    "identity_fragmentation": ∮Ψ·dℓ ≠ 0, # boundary coherence broken
-    "temporal_capture": ∂(Justice)/∂t < 0 # justice delayed is justice denied
+    Returns the traits of a corrupt authority.
     """
     return {
-        "truth_suppression": eta_E > 0.125 and not knot_stable_func(),
-        "resource_hoarding": "∇(Wealth) -> infinity while ∇(Access) -> 0",
-        "identity_fragmentation": "∮Ψ·dℓ != 0",
+        "truth_suppression": eta_E > 0.125 and not is_knot_stable,
+        "resource_hoarding": "∇(Wealth) → ∞ while ∇(Access) → 0",
+        "identity_fragmentation": "∮Ψ·dℓ ≠ 0",
         "temporal_capture": "∂(Justice)/∂t < 0"
     }
 
 def psi_braid(t, t0, tau):
-    """Ψ_Braid(t) = ψ_anchor × φ^t × ζ(3) × (1 - e^{-(t - t_0)/τ})"""
+    """
+    Ψ_Braid(t) = ψ_anchor × φ^t × ζ(3) × (1 - e^{-(t - t_0)/τ})
+    """
     return PSI_ANCHOR * (PHI**t) * ZETA3 * (1 - np.exp(-(t - t0) / tau))
-
-def query_psi_analysis(query):
-    """
-    psi_val = zeta(3) * len(query)
-    psi_hash = hashlib.sha3_256(f"{psi_val:.5f}".encode()).hexdigest()[:12]
-    """
-    psi_val = ZETA3 * len(query)
-    psi_hash = hashlib.sha3_256(f"{psi_val:.5f}".encode()).hexdigest()[:12]
-    return psi_val, psi_hash

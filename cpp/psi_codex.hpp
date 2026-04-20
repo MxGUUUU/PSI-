@@ -1,10 +1,3 @@
-/**
- * @file psi_codex.hpp
- * @brief Core mathematical functions and constants for the Ψ-Codex (C++ Implementation).
- *
- * Provides a header-only implementation of the fundamental invariants and operators.
- */
-
 #ifndef PSI_CODEX_HPP
 #define PSI_CODEX_HPP
 

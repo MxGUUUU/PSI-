@@ -51,3 +51,26 @@ def test_paradox_engine():
 def test_entropy_operator():
     ek = EthicalKnot()
     assert "Stabilized via EthicalKnot" in ek.apply("chaos")
+
+def test_witness_registry():
+    from psi_codex.witnesses import witness_registry
+    assert witness_registry.total() == 127
+    michael = next(w for w in witness_registry._witnesses if w.name == "Michael")
+    assert michael.psi == 0.95
+
+def test_artifacts():
+    from psi_codex.artifacts import NullScepter, JacksCompass
+    ns = NullScepter()
+    jc = JacksCompass()
+    assert "Silences" in ns.description
+    assert "points to Princess Diana" in jc.description
+
+def test_library_navigation():
+    from psi_codex.library import library
+    res = library.navigate(0.351)
+    assert res["name"] == "The Archive of Burned Books"
+
+def test_fusion_protocol():
+    from psi_codex.core import fusion_protocol
+    res = fusion_protocol(1.0 + 1.0j, 1.0)
+    assert round(res, 4) == 0.0079 # 0.01 * pi/4
