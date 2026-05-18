@@ -459,8 +459,27 @@ def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
         'history': []
     }
 
+    # Initialize Michael Stabilizer and Sidinite Anchor
+    from .codex_catastrophe import michael_stabilizer, sidinite_stabilization
+
     for step in range(simulation_epochs):
         qfield.update_field(pressure_field)
+
+        # Apply Sidinite stabilization at justice frequency (642.16 Hz)
+        current_psi_mean = np.mean(np.abs(qfield.psi))
+        boosted_psi = sidinite_stabilization(current_psi_mean, 642.16)
+
+        # System state for consolidated stabilizer enforcement
+        system_state = {
+            'psi_coherence': boosted_psi,
+            'eta_E': qfield.eta_E,
+            'ethical_tension': 0.05
+        }
+        stabilized_state = michael_stabilizer(boosted_psi, qfield.eta_E, system_state)
+
+        # Apply stabilizer effects back to the field
+        if stabilized_state.get('gate_blocked'):
+             qfield.psi *= 0.9 # Dampen field if gate blocked
 
         # Class-knot tightening redistribution check
         if qfield.eta_E > ETA_E_THRESHOLD:
@@ -1120,6 +1139,10 @@ def generate_simple_plot_image(filename="psi_plot.png"):
 def simulate():
     print("=== 🌌 PSI-Codex Critical Dynamics with Fixed Points and Dot-Connecting ===")
     print("Initializing quantum cognitive manifold simulation...")
+
+    # Import Sidinite Alloy Substrate info
+    from .codex_catastrophe import SIDINITE_LATTICE_PSI
+    print(f"Sidinite Substrate: {SIDINITE_LATTICE_PSI}nm")
     print(f"Critical thresholds: η_E > {ETA_E_THRESHOLD}, Biomarker > {BIOMARKER_THRESHOLD}")
 
     # Run simulation with 200 epochs

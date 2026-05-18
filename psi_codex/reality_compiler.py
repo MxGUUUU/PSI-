@@ -13,12 +13,15 @@ class BraidAutomorphism:
 
     def reidemeister_IV(self, braid_state):
         """
-        Reidemeister-IV move: A 4-strand move preserving topological knot integrity.
-        Ensures that the 4th-order ground term dominates the 3rd-order modulated term.
+        Reidemeister-IV move: Preserves topological knot integrity.
+        Formula: 4 * 3 > 3x{%}* (Symbolic dominance)
         """
-        # Symbolic dominance: 4x3 > 3x{%}*
-        dominance_factor = 12 / (3 * (np.abs(np.mean(braid_state)) % 1 + 1e-9))
-        return braid_state * np.exp(1j * np.pi / (dominance_factor * self.phi))
+        x_star = np.abs(np.mean(braid_state)) % 1
+        dominance = 12 > (3 * x_star)
+
+        # Apply phase shift if dominance is maintained
+        shift = np.pi / 5 if dominance else np.pi / 16
+        return braid_state * np.exp(1j * shift / self.phi)
 
     def drinfeld_associator(self, x, y, z):
         """

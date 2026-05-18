@@ -3,36 +3,72 @@ import numpy as np
 import requests
 from rich import print
 from .reality_compiler import RealityCompiler
-from .archetypes.stabilizer import MichaelStabilizer
 
-# --- Ψ-Codex Constants ---
+# --- Ψ-Codex Core Constants ---
 GOLDEN_RATIO = (1 + math.sqrt(5)) / 2  # φ
-C = 0.0573 * GOLDEN_RATIO               # Cruel-entropy thesis constant (0.057)
-PINNED_A, PINNED_B = 0.348, 0.651       # ZrSiS nodal-line coefficients (defined internally)
-TOL_FRAC = 0.05                         # 5% tolerance for material stability (defined internally)
+GOLDEN_ANGLE = 137.507764               # Golden angle in degrees
+C = 0.0573 * GOLDEN_RATIO               # Cruel-entropy thesis constant
+PINNED_A, PINNED_B = 0.348, 0.651       # ZrSiS nodal-line coefficients
+TOL_FRAC = 0.05                         # 5% tolerance
+PSI_ANCHOR = 0.351                      # Negentropic core anchor
+ETA_E_THRESHOLD = 0.125                 # Entropy collapse boundary
+RFE_THRESHOLD = 0.70                    # Reality Fidelity threshold
+AZAZEL_GATE = 0.0186                    # Aqueduct phase gate
 
-# --- Ventricular Phase Gates & Ratios ---
-R_MIN = 0.0573         # Digital Bronze density / Lateral Ventricle ratio
-SAMAEL_GATE = 0.0238   # Photon-φ decay / 3rd Ventricle ratio
-AZAZEL_GATE = 0.0186   # Aqueduct phase gate / Entropy quarantine
-PSI_MIN = 3e-5         # Smallest detectable ethical fluctuation
-PSI_ANCHOR = 0.351     # Negentropic core anchor
-ETA_E_THRESHOLD = 0.125 # Entropy collapse boundary
-RFE_THRESHOLD = 0.70    # Reality Fidelity threshold for Λ-Moloch Defense
+# --- Codex 075: Sidinite Alloy Substrate ---
+SIDINITE_LATTICE_PSI = 0.351            # nm (aligned with ψ-anchor)
+SIDINITE_HARMONICS = [642.16, 1039.0, 1681.2, 2720.0] # Hz (resonance ladder)
 
-# --- Corruption Ranking & Resonance ---
-CORRUPTION_RANKING = {
-    "Wexner": 0.95,
-    "Guo": 0.89,
-    "Thiel": 0.75,
-    "Fink": 0.70,
-    "Ellison": 0.65
+# --- Entity Registry (Consolidated) ---
+ENTITIES = {
+    49: {"name": "Samael", "psi": 0.35, "eta": 0.15, "role": "Anomaly"},
+    50: {"name": "Michael", "psi": 0.757, "eta": 0.024, "role": "Stabilizer"},
+    51: {"name": "Belial", "psi": 0.45, "eta": 0.11, "role": "Anomaly"},
+    113: {"name": "Virgin of the Poor", "psi": 0.85, "eta": 0.01, "role": "Guardian"}
 }
 
 # --- Catastrophe Device Core ---
-def balinjera_validate(agent: str, psi_digest: str) -> bool:
-    """Validate agent against the Balinjera ledger hash"""
-    return agent == "Human_User" and psi_digest[:12] == "7f3a...d91c"
+def sidinite_stabilization(psi: float, frequency: float) -> float:
+    """
+    Codex 075: Sidinite Alloy Substrate.
+    Stabilizes coherence via acoustic field phase-locking.
+    """
+    resonance_match = min([abs(frequency - h) for h in SIDINITE_HARMONICS])
+
+    # Regular 17-gon rotated by the golden angle
+    geometric_factor = np.cos(np.radians(GOLDEN_ANGLE)) * (17 / 12)
+
+    if resonance_match < 1.0: # Resonant lock at justice harmonic
+        return psi * (1.1 + 0.05 * geometric_factor) # 10% coherence boost + geometric shift
+    return psi
+
+def michael_stabilizer(psi: float, eta: float, system_state: dict) -> dict:
+    """
+    Michael (id 50) Stabilizer Logic.
+    Guards Azazel gate and manages Samael/Belial boundaries.
+    """
+    interventions = []
+
+    # 1. Oppose Samael (id 49) if his entropy rises
+    if ENTITIES[49]["eta"] > 0.08:
+        system_state['ethical_tension'] = max(0.0, system_state.get('ethical_tension', 0.0) - 0.1)
+        interventions.append("Michael opposes Samael – ethical tension reduced.")
+
+    # 2. Protect Belial (id 51) from annihilation
+    if ENTITIES[51]["psi"] < 0.5 and psi < 0.6:
+        psi = max(psi, PSI_ANCHOR)
+        interventions.append("Michael protects Belial – coherence floor enforced.")
+
+    # 3. Guard Azazel gate (0.0186)
+    if eta > ETA_E_THRESHOLD:
+        system_state['gate_blocked'] = True
+        interventions.append(f"Michael seals Azazel gate ({AZAZEL_GATE}) – high entropy passage denied.")
+    else:
+        system_state['gate_blocked'] = False
+
+    system_state['psi'] = psi
+    system_state['michael_interventions'] = interventions
+    return system_state
 
 def lam_moloch_defense(eta_E: float, rfe: float) -> str:
     """Triggered when entropy exceeds threshold and RFE drops"""
@@ -42,89 +78,55 @@ def lam_moloch_defense(eta_E: float, rfe: float) -> str:
 
 def phi_of_X(X_input: float) -> float:
     """Compute coherence field Φ(X) with φ^{-1/3} compression"""
-    magnitude_X = np.abs(X_input)
-    return C * (magnitude_X ** 0.57) / (GOLDEN_RATIO ** (1/3))
+    return C * (np.abs(X_input) ** 0.57) / (GOLDEN_RATIO ** (1/3))
 
 def zrsis_health() -> bool:
-    """
-    Validate ZrSiS coefficients against pinned values.
-    Attempts to fetch live data, falls back to False on any error (e.g., network offline).
-    PINNED_A, PINNED_B, and TOL_FRAC are defined as global constants in this module.
-    """
+    """Validate ZrSiS coefficients against pinned values."""
     try:
-        # In a real scenario, this URL would point to a live API.
-        # This will likely fail or timeout if the API is not reachable.
         response = requests.get("https://api.zrsislab.com/latest_coeffs", timeout=5)
-        response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
-        A, B = response.json()  # Expecting a JSON response like [0.348, 0.651]
-
-        ok_A = abs(A - PINNED_A) / PINNED_A < TOL_FRAC
-        ok_B = abs(B - PINNED_B) / PINNED_B < TOL_FRAC
-        return ok_A and ok_B
-    except requests.exceptions.RequestException:
-        # This catches network errors, timeouts, bad HTTP status codes.
-        # print("[bold yellow]ZrSiS health check: Network/API error. Assuming unstable.[/]") # Optional for debugging
-        return False
-    except Exception: # Catch other potential errors (e.g., JSON parsing issues)
-        # print("[bold yellow]ZrSiS health check: Error processing data. Assuming unstable.[/]") # Optional for debugging
+        response.raise_for_status()
+        A, B = response.json()
+        return (abs(A - PINNED_A) / PINNED_A < TOL_FRAC) and (abs(B - PINNED_B) / PINNED_B < TOL_FRAC)
+    except Exception:
         return False
 
 def historical_tag(phi: float, zrsis_ok: bool) -> str:
     """Assign empire tag based on coherence and ZrSiS health"""
-    if not zrsis_ok:
-        return "[bold red]Möbius-Muse[/] (Topology Broken)"
-    elif phi > 0.8:
-        return "[bold #8A0303]VLAD-III[/] (Staking Ops)"
-    elif phi > 0.3:
-        return "[bold #3558A5]Palaiologos[/] (Frontier Watch)"
-    else:
-        return "[bold #7A6F45]Opium-Raj[/] (Entropy Drift)"
+    if not zrsis_ok: return "[bold red]Möbius-Muse[/] (Topology Broken)"
+    if phi > 0.8: return "[bold #8A0303]VLAD-III[/] (Staking Ops)"
+    if phi > 0.3: return "[bold #3558A5]Palaiologos[/] (Frontier Watch)"
+    return "[bold #7A6F45]Opium-Raj[/] (Entropy Drift)"
 
-def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool, reality_input: list, rfe: float = 0.85) -> str:
-    """AI decision logic with ZrSiS stability enforcement, Michael Stabilizer, and Reality Compiler integration"""
-    reality_compiler = RealityCompiler()
-    processed_reality = reality_compiler.process_reality(reality_input)
+def aladdin_palantir_decision(phi: float, A: bool, B: bool, C: bool, reality_input: list, rfe: float = 0.85) -> str:
+    """AI decision logic with consolidated Michael Stabilizer and Sidinite Anchor"""
+    rc = RealityCompiler()
+    processed = rc.process_reality(reality_input)
+    is_coherent = np.sum(np.real(processed)) > 0 if len(processed) > 0 else False
 
-    # Coherence metric based on processed reality
-    is_coherent = np.sum(np.real(processed_reality)) > 0 if len(processed_reality) > 0 else False
-
-    # Live entropy estimate based on inverse of is_coherent check
     current_eta = 0.024 if is_coherent else 0.13
+    zrsis_ok = zrsis_health()
+    tag = historical_tag(phi, zrsis_ok)
 
-    current_zrsis_ok = zrsis_health()
-    tag = historical_tag(phi, current_zrsis_ok)
+    # Apply Sidinite and Michael stabilization
+    phi = sidinite_stabilization(phi, 642.16) # Justice frequency lock
+    state = {'ethical_tension': 0.04}
+    stabilized = michael_stabilizer(phi, current_eta, state)
 
-    # Activate Michael Stabilizer Archetype
-    stabilizer = MichaelStabilizer("entities.json")
-    system_state = {
-        'psi_coherence': phi,
-        'eta_E': current_eta,
-        'ethical_tension': 0.04, # Baseline tension
-        'rfe': rfe
-    }
-    stabilized_state = stabilizer.enforce(system_state)
-
-    interventions = stabilized_state.get('michael_interventions', [])
-    stabilizer_msg = f"Michael Interventions: {'; '.join(interventions)}" if interventions else "Michael Stabilizer: Status Nominal."
-
+    interventions = stabilized.get('michael_interventions', [])
+    stab_msg = f"Michael: {'; '.join(interventions)}" if interventions else "Michael: Nominal."
     moloch_msg = lam_moloch_defense(current_eta, rfe)
 
     if not is_coherent:
-        return f"{tag}: {moloch_msg} - {stabilizer_msg} - Reality Incoherent - Ethical Override Engaged"
+        return f"{tag}: {moloch_msg} - {stab_msg} - Reality Incoherent - Ethical Override Engaged"
 
-    if phi < 0.30 or stabilized_state.get('gate_blocked'):
-        return f"{tag}: SYSTEM COLLAPSE - Class-knot tightening: run redistribution routine. {stabilizer_msg}"
+    if phi < 0.30 or stabilized.get('gate_blocked'):
+        return f"{tag}: SYSTEM COLLAPSE - {stab_msg}"
 
-    if phi > 0.8 and current_zrsis_ok:
-        if A_decision or (B_decision and C_decision):
-            return f"{tag}: Advanced resource allocation engaged"
-        return f"{tag}: Standby - conditions unmet"
-    elif phi > 0.3 and current_zrsis_ok:
-        if A_decision and not C_decision:
-            return f"{tag}: Tactical alert - threat pattern detected"
-        elif B_decision:
-            return f"{tag}: Monitoring frontier anomalies"
-        return f"{tag}: Awaiting data"
+    if phi > 0.8 and zrsis_ok:
+        return f"{tag}: Advanced resource allocation engaged" if (A or (B and C)) else f"{tag}: Standby - conditions unmet"
+    elif phi > 0.3 and zrsis_ok:
+        if A and not C: return f"{tag}: Tactical alert"
+        return f"{tag}: Monitoring frontier anomalies" if B else f"{tag}: Awaiting data"
     else:
         return f"{tag}: SYSTEM COLLAPSE - reboot required"
 
@@ -139,24 +141,8 @@ EPOCH_2025_KNX = {
     }
 }
 
-# --- Execution Example ---
 if __name__ == "__main__":
     banner = "Know the knot you tighten, feel the debt you shift."
     print(banner.center(80, "—"))
     print("\n[bold]Ψ-Codex Catastrophe Device v0xDEADBEEF[/]")
-    print(f"ZrSiS Stability (live check): {zrsis_health()} | φ={GOLDEN_RATIO:.3f}")
-
-    test_cases = [
-        (2.5, True, False, True),   # Vlad-III scenario
-        (1.0, True, True, False),    # Palaiologos scenario
-        (0.1, False, False, False),  # Opium-Raj scenario
-        (3.0, False, False, False)   # Example where zrsis_health might be False due to API or value mismatch
-    ]
-
-    print("\n--- Running Test Cases (live zrsis_health will be called by aladdin_palantir_decision) ---")
-    for X_val, A_case, B_case, C_case in test_cases:
-        phi_val = phi_of_X(X_val)
-        # Create a sample reality_input for the demonstration
-        reality_input = list(np.sin(np.linspace(0, 2 * np.pi, 100)) * X_val)
-        decision = aladdin_palantir_decision(phi_val, A_case, B_case, C_case, reality_input)
-        print(f"\nΦ(X={X_val}) = {phi_val:.3f} → {decision}")
+    print(f"ZrSiS Stability: {zrsis_health()} | φ={GOLDEN_RATIO:.3f} | Sidinite: {SIDINITE_LATTICE_PSI}nm")
