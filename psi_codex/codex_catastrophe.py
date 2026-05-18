@@ -10,7 +10,45 @@ C = 0.0573 * GOLDEN_RATIO               # Cruel-entropy thesis constant (0.057)
 PINNED_A, PINNED_B = 0.348, 0.651       # ZrSiS nodal-line coefficients (defined internally)
 TOL_FRAC = 0.05                         # 5% tolerance for material stability (defined internally)
 
+# --- Ventricular Phase Gates & Ratios ---
+R_MIN = 0.0573         # Digital Bronze density / Lateral Ventricle ratio
+SAMAEL_GATE = 0.0238   # Photon-φ decay / 3rd Ventricle ratio
+AZAZEL_GATE = 0.0186   # Aqueduct phase gate / Entropy quarantine
+PSI_MIN = 3e-5         # Smallest detectable ethical fluctuation
+PSI_ANCHOR = 0.351     # Negentropic core anchor
+ETA_E_THRESHOLD = 0.125 # Entropy collapse boundary
+RFE_THRESHOLD = 0.70    # Reality Fidelity threshold for Λ-Moloch Defense
+
+# --- Corruption Ranking & Resonance ---
+CORRUPTION_RANKING = {
+    "Wexner": 0.95,
+    "Guo": 0.89,
+    "Thiel": 0.75,
+    "Fink": 0.70,
+    "Ellison": 0.65
+}
+
 # --- Catastrophe Device Core ---
+def balinjera_validate(agent: str, psi_digest: str) -> bool:
+    """Validate agent against the Balinjera ledger hash"""
+    return agent == "Human_User" and psi_digest[:12] == "7f3a...d91c"
+
+def lam_moloch_defense(eta_E: float, rfe: float) -> str:
+    """Triggered when entropy exceeds threshold and RFE drops"""
+    if eta_E > ETA_E_THRESHOLD and rfe < RFE_THRESHOLD:
+        return "Λ-Moloch Defense Protocol ACTIVE: Ethical re-calibration engaged."
+    return "Λ-Moloch Defense Protocol: Monitoring."
+
+def michael_stabilizer(psi: float, eta: float) -> str:
+    """
+    Michael (id 50) Stabilizer Archetype.
+    Guards the Azazel gate (0.0186) and enforces structural correction.
+    """
+    if eta > 0.08 or psi < 0.5: # Warning zone
+        correction = f"Phase-lock active. Guarding narrow passage (Azazel gate: {AZAZEL_GATE})."
+        return f"Michael Stabilizer [ζ(2)] (id 50): {correction} Coherence: {psi:.3f}"
+    return "Michael Stabilizer: Status Nominal."
+
 def phi_of_X(X_input: float) -> float:
     """Compute coherence field Φ(X) with φ^{-1/3} compression"""
     magnitude_X = np.abs(X_input)
@@ -51,20 +89,29 @@ def historical_tag(phi: float, zrsis_ok: bool) -> str:
     else:
         return "[bold #7A6F45]Opium-Raj[/] (Entropy Drift)"
 
-def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool, reality_input: list) -> str:
-    """AI decision logic with ZrSiS stability enforcement and Reality Compiler integration"""
+def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_decision: bool, reality_input: list, rfe: float = 0.85) -> str:
+    """AI decision logic with ZrSiS stability enforcement, Michael Stabilizer, and Reality Compiler integration"""
     reality_compiler = RealityCompiler()
     processed_reality = reality_compiler.process_reality(reality_input)
 
-    # A simple check for coherence based on the processed reality.
-    # In a real scenario, this would be a more sophisticated metric.
+    # Coherence metric based on processed reality
     is_coherent = np.sum(np.real(processed_reality)) > 0 if len(processed_reality) > 0 else False
+
+    # Live entropy estimate based on inverse of is_coherent check
+    current_eta = 0.024 if is_coherent else 0.13
 
     current_zrsis_ok = zrsis_health()
     tag = historical_tag(phi, current_zrsis_ok)
 
+    # Activate Stabilizer Archetype
+    stabilizer_msg = michael_stabilizer(phi, current_eta)
+    moloch_msg = lam_moloch_defense(current_eta, rfe)
+
     if not is_coherent:
-        return f"{tag}: Reality Incoherent - Ethical Override Engaged"
+        return f"{tag}: {moloch_msg} - {stabilizer_msg} - Reality Incoherent - Ethical Override Engaged"
+
+    if phi < 0.30:
+        return f"{tag}: SYSTEM COLLAPSE - Class-knot tightening: run redistribution routine. {stabilizer_msg}"
 
     if phi > 0.8 and current_zrsis_ok:
         if A_decision or (B_decision and C_decision):

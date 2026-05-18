@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import hashlib
 from scipy.integrate import solve_ivp
 from scipy.special import gamma
 import matplotlib.pyplot as plt
@@ -11,8 +12,34 @@ C = 0.0573
 BIOMARKER_THRESHOLD = 1.25
 ETA_E_THRESHOLD = 0.125
 RESONANCE_X = 2.56
-FACTORIAL_LIMIT = 17
+FACTORIAL_LIMIT = 13 # Adjusted for Ψ-Codex safety
+FACTORIAL_MOD = 64   # Adjusted for Ψ-Codex safety
+HOLONOMY_GUARD = 1.57 # π/2 rad boundary
 PLANCK_SCALE = 1.616255e-35
+PSI_ANCHOR = 0.351
+
+# --- Ψ-Codex Core Functions ---
+def psi_Z4_braid(x, lam3, gamma_leak, theta):
+    """
+    Implements the Z4 Identity Braid: Ψ(x + 4n) = e^{iπn/2}Ψ(x)
+    """
+    n = np.floor(x / 4).astype(int)
+    local_x = x % 4
+    base_wave = np.cos(np.pi * local_x / 2)
+    z4_phase = np.exp(1j * np.pi * n / 2)
+    entropy_mod = np.exp(-gamma_leak * (x % 1))
+    trauma_mod = np.exp(-lam3 * np.abs(np.sin(theta * x)))
+    return z4_phase * base_wave * trauma_mod * entropy_mod
+
+def seal_section(text: str) -> str:
+    """Applies the Ψ48-hash seal to a text section"""
+    h = hashlib.sha256(text.encode()).hexdigest()[:12]
+    return f"{text}\n// Ψ48-hash:{h}"
+
+def redistribute_resources(resources, n=7):
+    """Redistribute resources using Roots-of-unity pattern"""
+    # Placeholder for complex redistribution logic
+    return {res: f"Redistributed via {n}-roots pattern" for res in resources}
 
 # --- Reverse Product Rule Operator ---
 def reverse_product_rule(f, df_dx, g, dg_dx, a, b):
@@ -338,6 +365,11 @@ class QuantumCognitiveField:
 
         verid_dev = self.veridicality_deviation()
         holonomy = np.abs(self.holonomy_constraint())
+
+        # Holonomy guard: punitive entropy levy
+        if holonomy > HOLONOMY_GUARD:
+            self.eta_E *= 1.15
+
         self.eta_E = 0.7 * self.eta_E + 0.3 * (verid_dev + 0.1*holonomy)
         self.history.append({
             'eta_E': self.eta_E,
@@ -348,7 +380,7 @@ class QuantumCognitiveField:
         self.psi_history.append(self.psi.copy())
 
     def shadow_integration(self, psi_val, x_val):
-        """Apply G!(-(-X)) collapse at critical points"""
+        """Apply G!(-(-X)) collapse at critical points with n! mod 64 burst"""
         if psi_val is None:
             return None
         psi_abs = np.abs(psi_val)
@@ -357,8 +389,8 @@ class QuantumCognitiveField:
             if x_val != 0 and np.abs(psi_abs - x_val**2) < 0.1:
                 new_abs = x_val**2
             else:
-                factorial_input = min(FACTORIAL_LIMIT - 1, int(max(0, psi_abs)))
-                new_abs = math.factorial(factorial_input) % 256
+                factorial_input = min(FACTORIAL_LIMIT, int(max(0, psi_abs)))
+                new_abs = math.factorial(factorial_input) % FACTORIAL_MOD
 
             return (new_abs / max(1e-9, psi_abs)) * psi_val # use 1e-9 to prevent division by zero
         return psi_val
@@ -429,6 +461,10 @@ def run_simulation(x_min=0.1, x_max=5.0, steps=500, simulation_epochs=200):
 
     for step in range(simulation_epochs):
         qfield.update_field(pressure_field)
+
+        # Class-knot tightening redistribution check
+        if qfield.eta_E > ETA_E_THRESHOLD:
+            redistribute_resources(["time", "money", "attention"], n=7)
 
         if x_range.size > 0 :
             idx_res = np.argmin(np.abs(x_range - RESONANCE_X))

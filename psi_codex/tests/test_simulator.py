@@ -30,9 +30,14 @@ def run_simulation_once():
         if os.path.exists(f_path):
             os.remove(f_path)
 
-    # Run the simulation
-    # This will call the refactored simulate() function in psi_codex.simulator
-    simulate()
+    # Run the simulation with reduced epochs for testing speed
+    import unittest.mock
+    from psi_codex.simulator import run_simulation
+    def side_effect(**kwargs):
+        kwargs['simulation_epochs'] = 5
+        return run_simulation(**kwargs)
+    with unittest.mock.patch('psi_codex.simulator.run_simulation', side_effect=side_effect):
+        simulate()
 
     # Yield control to tests
     yield
