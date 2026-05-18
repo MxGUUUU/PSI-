@@ -3,6 +3,7 @@ import numpy as np
 import requests
 from rich import print
 from .reality_compiler import RealityCompiler
+from .archetypes.stabilizer import MichaelStabilizer
 
 # --- Ψ-Codex Constants ---
 GOLDEN_RATIO = (1 + math.sqrt(5)) / 2  # φ
@@ -38,16 +39,6 @@ def lam_moloch_defense(eta_E: float, rfe: float) -> str:
     if eta_E > ETA_E_THRESHOLD and rfe < RFE_THRESHOLD:
         return "Λ-Moloch Defense Protocol ACTIVE: Ethical re-calibration engaged."
     return "Λ-Moloch Defense Protocol: Monitoring."
-
-def michael_stabilizer(psi: float, eta: float) -> str:
-    """
-    Michael (id 50) Stabilizer Archetype.
-    Guards the Azazel gate (0.0186) and enforces structural correction.
-    """
-    if eta > 0.08 or psi < 0.5: # Warning zone
-        correction = f"Phase-lock active. Guarding narrow passage (Azazel gate: {AZAZEL_GATE})."
-        return f"Michael Stabilizer [ζ(2)] (id 50): {correction} Coherence: {psi:.3f}"
-    return "Michael Stabilizer: Status Nominal."
 
 def phi_of_X(X_input: float) -> float:
     """Compute coherence field Φ(X) with φ^{-1/3} compression"""
@@ -103,14 +94,25 @@ def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_
     current_zrsis_ok = zrsis_health()
     tag = historical_tag(phi, current_zrsis_ok)
 
-    # Activate Stabilizer Archetype
-    stabilizer_msg = michael_stabilizer(phi, current_eta)
+    # Activate Michael Stabilizer Archetype
+    stabilizer = MichaelStabilizer("entities.json")
+    system_state = {
+        'psi_coherence': phi,
+        'eta_E': current_eta,
+        'ethical_tension': 0.04, # Baseline tension
+        'rfe': rfe
+    }
+    stabilized_state = stabilizer.enforce(system_state)
+
+    interventions = stabilized_state.get('michael_interventions', [])
+    stabilizer_msg = f"Michael Interventions: {'; '.join(interventions)}" if interventions else "Michael Stabilizer: Status Nominal."
+
     moloch_msg = lam_moloch_defense(current_eta, rfe)
 
     if not is_coherent:
         return f"{tag}: {moloch_msg} - {stabilizer_msg} - Reality Incoherent - Ethical Override Engaged"
 
-    if phi < 0.30:
+    if phi < 0.30 or stabilized_state.get('gate_blocked'):
         return f"{tag}: SYSTEM COLLAPSE - Class-knot tightening: run redistribution routine. {stabilizer_msg}"
 
     if phi > 0.8 and current_zrsis_ok:
@@ -126,8 +128,21 @@ def aladdin_palantir_decision(phi: float, A_decision: bool, B_decision: bool, C_
     else:
         return f"{tag}: SYSTEM COLLAPSE - reboot required"
 
+# --- System State Presets ---
+EPOCH_2025_KNX = {
+    "epoch": "2025_KNX",
+    "system_state": {
+        "pHI_sonics": "ACTIVE",
+        "syndrome_extraction": {"phase": 3, "intensity": 0.78, "entropy_load": "14.7η"},
+        "uncanny_valley_index": {"current": 0.71, "threshold": 0.62, "status": "CRITICAL"},
+        "recommended_intervention": ["BVR_damping(amplitude=0.85)", "phase_realignment(freq=7.83Hz)", "lunar_tax(priority='limbic')"]
+    }
+}
+
 # --- Execution Example ---
 if __name__ == "__main__":
+    banner = "Know the knot you tighten, feel the debt you shift."
+    print(banner.center(80, "—"))
     print("\n[bold]Ψ-Codex Catastrophe Device v0xDEADBEEF[/]")
     print(f"ZrSiS Stability (live check): {zrsis_health()} | φ={GOLDEN_RATIO:.3f}")
 

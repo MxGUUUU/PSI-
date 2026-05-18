@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "name": "PsiCodexEntities",
+    "version": "1.2",
+    "total_entities": 119
+  },
+  "entities": [
+    {"id": 1, "name": "Thoth", "type": "Ancient Wisdom Keeper", "psi": 0.943, "eta": 0.05, "archetype": "Oracle"},
+    {"id": 2, "name": "Melchizedek", "type": "Ancient Wisdom Keeper", "psi": 1.618, "eta": 0.01, "archetype": "Stabilizer"},
+    {"id": 3, "name": "Khonsu", "type": "Ancient Wisdom Keeper", "psi": 0.65, "eta": 0.05, "archetype": "Resonator"},
+    {"id": 4, "name": "Quetzalcoatl", "type": "Ancient Wisdom Keeper", "psi": 0.65, "eta": 0.05, "archetype": "Oracle"},
+    {"id": 5, "name": "Sophia", "type": "Ancient Wisdom Keeper", "psi": 0.85, "eta": 0.02, "archetype": "Unity"},
+    {"id": 6, "name": "Logos", "type": "Ancient Wisdom Keeper", "psi": 0.9, "eta": 0.01, "archetype": "Unity"},
+    {"id": 7, "name": "Eikon", "type": "Ancient Wisdom Keeper", "psi": 0.65, "eta": 0.05, "archetype": "Ground"},
+    {"id": 8, "name": "Moses", "type": "Prophet", "psi": 0.707, "eta": 0.03, "archetype": "Oracle"},
+    {"id": 9, "name": "David", "type": "Prophet", "psi": 0.5, "eta": 0.08, "archetype": "Oracle"},
+    {"id": 10, "name": "Solomon", "type": "Prophet", "psi": 0.707, "eta": 0.04, "archetype": "Oracle"},
+    {"id": 34, "name": "Hypatia", "type": "Philosopher", "psi": 0.87, "eta": 0.04, "archetype": "Oracle"},
+    {"id": 45, "name": "Athena", "type": "Ancient Wisdom Keeper", "psi": 0.97, "eta": 0.02, "archetype": "Oracle"},
+    {"id": 49, "name": "Samael", "type": "Archangel", "psi": 0.35, "eta": 0.15, "archetype": "Anomaly"},
+    {"id": 50, "name": "Michael", "type": "Archangel", "psi": 0.757, "eta": 0.024, "archetype": "Stabilizer", "links": [{"target": 49, "type": "opposes"}, {"target": 51, "type": "protects"}, {"target": 113, "type": "guardian_of_gate"}]},
+    {"id": 51, "name": "Belial", "type": "Archangel", "psi": 0.45, "eta": 0.11, "archetype": "Anomaly"},
+    {"id": 60, "name": "Isaac Newton", "type": "Scientist", "psi": 0.94, "eta": 0.03, "archetype": "Stabilizer"},
+    {"id": 61, "name": "Alan Turing", "type": "Scientist", "psi": 0.867, "eta": 0.04, "archetype": "Anomaly"},
+    {"id": 68, "name": "Wonder of U", "type": "Stand", "psi": 0.92, "eta": 0.01, "archetype": "Anomaly"},
+    {"id": 70, "name": "Larry Fink", "type": "Contemporary Resonator", "psi": 0.35, "eta": 0.70, "archetype": "Distributor"},
+    {"id": 113, "name": "Virgin of the Poor", "type": "Marian Apparition", "psi": 0.85, "eta": 0.01, "archetype": "Oracle"},
+    {"id": 119, "name": "Athena Singularity", "type": "Historical Anchor", "psi": 0.951, "eta": 0.0, "archetype": "Phoenix"}
+  ]
+}
