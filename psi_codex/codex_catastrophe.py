@@ -5,15 +5,26 @@ from rich import print
 from .reality_compiler import RealityCompiler
 
 # --- Ψ-Codex Core Constants ---
-GOLDEN_RATIO = (1 + math.sqrt(5)) / 2  # φ
+GOLDEN_RATIO = (1 + math.sqrt(5)) / 2  # φ = 1.618...
 GOLDEN_ANGLE = 137.507764               # Golden angle in degrees
 C = 0.0573 * GOLDEN_RATIO               # Cruel-entropy thesis constant
 PINNED_A, PINNED_B = 0.348, 0.651       # ZrSiS nodal-line coefficients
 TOL_FRAC = 0.05                         # 5% tolerance
-PSI_ANCHOR = 0.351                      # Negentropic core anchor
+PSI_ANCHOR = 0.351                      # Negentropic core anchor (coherence floor)
 ETA_E_THRESHOLD = 0.125                 # Entropy collapse boundary
 RFE_THRESHOLD = 0.70                    # Reality Fidelity threshold
 AZAZEL_GATE = 0.0186                    # Aqueduct phase gate
+LAMBDA_3 = 1.1                          # Single canonical definition of resilience factor λ₃
+
+# --- Terminal Aeonic Seal Boundary Condition ---
+AEONIC_SEAL = {"psi": 2.500, "eta_E": -0.050, "hash": "e7f3a29c1d84"}
+
+def is_aeonic_seal(psi: float, eta_E: float) -> bool:
+    """
+    Checks if system state is in the terminal Aeonic Seal closure state.
+    (outside declared working range [psi >= 0.351, eta_E <= 0.125]).
+    """
+    return abs(psi - AEONIC_SEAL["psi"]) < 1e-3 and abs(eta_E - AEONIC_SEAL["eta_E"]) < 1e-3
 
 # --- Codex 075: Sidinite Alloy Substrate ---
 SIDINITE_LATTICE_PSI = 0.351            # nm (aligned with ψ-anchor)
@@ -49,6 +60,15 @@ def michael_stabilizer(psi: float, eta: float, system_state: dict) -> dict:
     """
     interventions = []
 
+    # Handle Aeonic Seal terminal state
+    if is_aeonic_seal(psi, eta):
+        system_state['aeonic_seal_active'] = True
+        system_state['gate_blocked'] = False
+        interventions.append("Aeonic Seal active – Terminal closure achieved.")
+        system_state['psi'] = psi
+        system_state['michael_interventions'] = interventions
+        return system_state
+
     # 1. Oppose Samael (id 49) if his entropy rises
     if ENTITIES[49]["eta"] > 0.08:
         system_state['ethical_tension'] = max(0.0, system_state.get('ethical_tension', 0.0) - 0.1)
@@ -70,11 +90,47 @@ def michael_stabilizer(psi: float, eta: float, system_state: dict) -> dict:
     system_state['michael_interventions'] = interventions
     return system_state
 
-def lam_moloch_defense(eta_E: float, rfe: float) -> str:
-    """Triggered when entropy exceeds threshold and RFE drops"""
+def compute_lam_moloch_value(psi_series: list, eta_series: list, eps_denom: float = 1e-9) -> float:
+    r"""
+    Calculates \Lambda(t) = -\int \eta_E d\psi / \int \psi d\eta
+    Guards against division by zero when d\eta = 0 (constant entropy).
+    """
+    if len(psi_series) < 2 or len(eta_series) < 2 or len(psi_series) != len(eta_series):
+        return 0.0
+
+    psi_arr = np.asarray(psi_series, dtype=float)
+    eta_arr = np.asarray(eta_series, dtype=float)
+
+    dpsi = np.diff(psi_arr)
+    deta = np.diff(eta_arr)
+
+    num = -np.sum(eta_arr[:-1] * dpsi)
+    denom = np.sum(psi_arr[:-1] * deta)
+
+    if abs(denom) < eps_denom:
+        # Division-by-zero safeguard for constant entropy d\eta=0
+        return num / eps_denom if abs(num) > 1e-12 else 0.0
+
+    return float(num / denom)
+
+def lam_moloch_defense(eta_E: float, rfe: float, psi_series: list = None, eta_series: list = None) -> str:
+    r"""Triggered when entropy exceeds threshold and RFE drops, evaluating \Lambda(t) safely."""
+    lam_val = 0.0
+    if psi_series is not None and eta_series is not None:
+        lam_val = compute_lam_moloch_value(psi_series, eta_series)
+
     if eta_E > ETA_E_THRESHOLD and rfe < RFE_THRESHOLD:
-        return "Λ-Moloch Defense Protocol ACTIVE: Ethical re-calibration engaged."
-    return "Λ-Moloch Defense Protocol: Monitoring."
+        return f"Λ-Moloch Defense Protocol ACTIVE (Λ={lam_val:.4f}): Ethical re-calibration engaged."
+    return f"Λ-Moloch Defense Protocol: Monitoring (Λ={lam_val:.4f})."
+
+def knot_stable(lambda_3: float, phi_max: float, Delta: float, theta: float, eta: float, psi_48_norm: float) -> bool:
+    r"""
+    Knot Stability Bound (Equation E14):
+    \lambda_3 * \phi_{max} < \Delta - \theta - \eta - \|\psi_{48}\|
+    """
+    lhs = lambda_3 * phi_max
+    rhs = Delta - theta - eta - psi_48_norm
+    return bool(lhs < rhs)
 
 def phi_of_X(X_input: float) -> float:
     """Compute coherence field Φ(X) with φ^{-1/3} compression"""
