@@ -109,7 +109,7 @@ def compute_lam_moloch_value(psi_series: list, eta_series: list, eps_denom: floa
 
     if abs(denom) < eps_denom:
         # Division-by-zero safeguard for constant entropy d\eta=0
-        return num / eps_denom if abs(num) > 1e-12 else 0.0
+        return 0.0
 
     return float(num / denom)
 
