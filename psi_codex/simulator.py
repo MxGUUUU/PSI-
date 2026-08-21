@@ -405,17 +405,12 @@ class QuantumCognitiveField:
             bio_val = biomarker(t)
             exponent_term = -(0.125 - bio_val)
 
-            if PLANCK_SCALE < 1e-300: # Effectively zero
-                 bound = 0.0
-            elif exponent_term > np.log(np.finfo(float).max / (PLANCK_SCALE + 1e-9) + 1e-9): # Avoid overflow for exp
-                 bound = np.inf
-            elif exponent_term < np.log(np.finfo(float).tiny / (PLANCK_SCALE + 1e-9) + 1e-9): # Avoid underflow for exp
-                 bound = 0.0
-            else:
-                 bound = PLANCK_SCALE * np.exp(exponent_term)
+            # Safely clip exponent to prevent floating point overflow
+            clipped_exponent = float(np.clip(exponent_term, -500.0, 700.0))
+            bound = PLANCK_SCALE * np.exp(clipped_exponent)
 
             d_scalar = D[0] if isinstance(D, (list, np.ndarray)) else D
-            term_pde = -kappa**2 * d_scalar + a2 * d_scalar - bound * d_scalar**3
+            term_pde = -kappa**2 * d_scalar + a2 * d_scalar - bound * (d_scalar**3)
             return term_pde if np.isfinite(term_pde) else 0.0
 
 
@@ -601,12 +596,12 @@ def plot_results(results):
     if disparity_data.size > 0 and not np.all(np.isnan(disparity_data)):
         t_disparity = np.linspace(0, 100, len(disparity_data))
         axs[2, 0].plot(t_disparity, disparity_data, 'k-', label=r'Disparity $\mathcal{D}(t)$')
+        axs[2, 0].legend()
     else:
         axs[2, 0].text(0.5, 0.5, 'Disparity data N/A or invalid.', transform=axs[2, 0].transAxes, ha='center', va='center')
     axs[2, 0].set_title('Bounded Disparity PDE Solution')
     axs[2, 0].set_xlabel('Conceptual Time')
     axs[2, 0].set_ylabel('Disparity Value')
-    axs[2, 0].legend()
     axs[2, 0].grid(True)
 
     # Plot 2,1: Critical Events
