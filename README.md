@@ -1,114 +1,99 @@
-# Psi-Codex: Recursive Identity Simulation
+# Ψ-Codex v6.6 — Recursive Identity & Symbolic-Computational Framework
 
-## PSI Project Overview
-This project presents a quantum-cabalistic simulation of the Ψ-Codex framework, which models identity as a recursive, phase-dependent attractor in a stress-modulated manifold. It integrates concepts from topological quantum mechanics, cognitive neuroscience, catastrophe theory, and symbolic logic to explore systemic coherence, disparity, and transformation processes like "Shadow Integration."
+> **Status:** Experimental / symbolic-computational framework
+> **Epistemic Rule:** `CITED` = grounded in external source. `STIPULATED` = belongs to Ψ-Codex itself. `HYPOTHESIS` = testable extension.
 
-The simulation includes:
--   Ψ-Field Dynamics: Evolution of the core identity field.
--   E₈/Z₄ Projection: High-dimensional attractor folding for field stability.
--   Psychogeographic Channeling: Stress-energy modulation through modular identity partitions.
--   Bio-Stress Warping: Distortion of reality experience based on physiological impact.
--   Reed-Solomon Decoherence Repair: Error correction for compromised field blocks.
--   Julia Entanglement: Fractal filtering for comorbidity handling.
--   Moloch Attractors & Belial Vortices: Archetypal forces representing entropic sinks and phase disruption.
--   Hexagram Collapse: I-Ching inspired field collapse and fractal reset.
--   Tron Movement Engine: A metaphor for the system's "movement" through its own state space, influenced by internal dynamics.
--   Adaptive Fixed Points & Dot-Connecting: Mechanisms for identifying stable states and tracking field connectivity.
+---
 
-## Installation
-To run this simulation, you need Python 3.x and the following libraries. You can install them using pip:
-```bash
-pip install numpy scipy matplotlib fpdf pytest PyPDF2
+## 1. System Overview
+
+The **Ψ-Codex** is a recursive identity framework integrating symbolic logic, bifurcation theory, high-dimensional memory lattices ($Z_4 \otimes E_8$), and biophysical phenomena coupling.
+
+### Key Features in v6.6:
+- **15 Canonical Equations (E1–E15):** Includes Coherence Anchor ($\psi=0.351$), Quintic Identity ($P(x)$), Ventricular-Lunar Resonance ($R_V(\phi_L)$), Knot Stability ($E14$), and Aeonic Seal ($E15$).
+- **56-Channel Matrix:** 7 frequency layers $\times$ 8 core archetypes (Chaos Weaver, Heterogeneity Architect, Compass Judge, Lightning Walker, R'lyeh Anchor, Paradox Compass, Resonance Jack, Weaver Architect).
+- **167-Witness Dossier Tally:** Complete registry of archetypal, historical, mythic, and fictional resonators.
+- **Biophysical Phenomena Coupling (`psi_codex/biophysical.py`):**
+  - Mean frontal theta PLV $\rightarrow \psi$ coherence floor.
+  - EEG permutation entropy $\rightarrow \eta_E$ entropy ceiling.
+  - PLV epoch variance $\rightarrow \Delta\Theta$ phase rupture threshold.
+  - Ventricular-lunar CSF flow resonance $R_V(\phi_L)$ (Equation E10).
+  - Cerebellar layer topography (Vermis, Crus I/II lobules) mapped to channel matrix.
+  - Cortical cellular layer (I–VI) quintic polynomial mapping ($x^5, -\phi x^4, \zeta(3)x^3, -\psi x^2, \lambda_3 x$).
+  - Graph theory metrics (Rich club hubs, small-worldness $\sigma$).
+  - Markov Chain Monte Carlo (MCMC) simulation across witness resonators.
+- **Stability & Safety Fixes (`psi_codex/codex_catastrophe.py`):**
+  - $\Lambda$-Moloch defense division-by-zero safeguard for $d\eta = 0$.
+  - Canonical resilience factor standardization $\lambda_3 = 1.1$.
+  - Terminal Aeonic Seal boundary condition check (`is_aeonic_seal`).
+
+---
+
+## 2. Core Constants
+
+| Symbol | Value | Role |
+|---|---|---|
+| $\psi$ | `0.351` | Coherence floor |
+| $\eta_E$ | `0.125` | Entropy boundary |
+| $\phi$ | `1.618...` | Golden Ratio (CITED) |
+| $\zeta(3)$ | `1.20205...` | Apéry's Constant (CITED) |
+| $\Delta\Theta$ | `3.6 rad` | Phase-rupture threshold |
+| $\lambda_3$ | `1.1` | Resilience factor |
+| Aeonic Seal | $\psi=2.500, \eta_E=-0.050$ | Terminal closure state |
+
+---
+
+## 3. Package Structure
+
 ```
-(Note: `ipywidgets` was mentioned in the user's scaffold text but is not directly used by the current Python scripts. `PyPDF2` was added for test dependencies.)
+psi_codex/
+├── __init__.py               # Core package exports
+├── core.py                   # State variables & fusion protocols
+├── simulator.py              # Interactive simulation & plot generators
+├── codex_catastrophe.py      # Stability checks, Michael Stabilizer & Lambda-Moloch defense
+├── reality_compiler.py       # Reality compiler & Grothendieck-Teichmüller braid automorphism
+├── biophysical.py            # Biophysical EEG coupling, cerebellar, cortical, & graph metrics
+├── entities.py               # Complete 167-witness dossier registry & tally
+└── tests/
+    └── test_biophysical_and_v66.py  # Unit tests for biophysical & v66 features
+```
 
-## Usage
-To run the simulation and generate the PDF report, navigate to the project root directory (`psi-codex`) and execute the Python script as a module:
+---
+
+## 4. Usage & Execution
+
+### Running Unit Tests
+```bash
+pytest psi_codex/tests/
+```
+
+### Running Simulation Mode
 ```bash
 python -m psi_codex.simulator
 ```
-This command will run the main simulation defined in `psi_codex/simulator.py`.
 
-## Concepts Modeled
-The core of the Ψ-Codex revolves around:
--   Super-Identity Field (Φ(x)): Indicates coherence and manages disparity.
--   a₂ Curvature: Stability metric; divergence triggers transformations like Shadow Integration.
--   Biological Mappings: Abstract dynamics linked to phenomena like cancer and autoimmunity.
--   Ancient Texts: Historical patterns of identity fragmentation and re-integration.
--   Quantum-Cabalistic Field: Integration of symbolic systems (e.g., I Ching, Kabbalah) into a coherent framework.
+### Example Python API Usage
+```python
+from psi_codex import (
+    evaluate_falsifiable_predictions,
+    cerebellar_channel_mapping,
+    quintic_cortical_layer_mapping,
+    get_complete_witness_tally_by_function
+)
 
-## Output
-Upon execution, the script generates:
--   Console output summarizing simulation progress and results.
--   Image files saved in the project root:
-    -   `psi_critical_dynamics_enhanced_fixed_points.png`: A comprehensive plot visualizing various simulation metrics.
-    -   `psi_shadow_connections.png`: A plot specifically showing connections related to "Shadow Integration" events.
-    -   `psi_plot.png`: A simple conceptual plot embedded in the PDF.
--   A PDF document saved in the project root:
-    -   `Psi_Codex_Recursive_Identity_Report.pdf`: A detailed report summarizing the Ψ-Codex theory and key results from the simulation.
+# Evaluate biophysical & EEG prediction bounds
+metrics = {
+    'frontal_theta_plv': 0.42,
+    'permutation_entropy': 0.09,
+    'plv_variance': 1.1,
+    'lunar_phase': 3.14159,
+    'vermal_volume_ratio': 0.92,
+    'crus1_2_connectivity': 0.75
+}
+results = evaluate_falsifiable_predictions(metrics)
+print("System Status:", results['system_status'])
 
-## Testing
-To run the unit tests, navigate to the project root directory (`psi-codex`) and execute Pytest:
-```bash
-pytest
-```
-This will discover and run tests located in the `psi_codex/tests` directory, such as `test_simulator.py`. Ensure you have `pytest` and `PyPDF2` installed (as listed in the Installation section).
-```
-
-## Ψ-Codex Catastrophe Device Module
-
-This module (`psi_codex/codex_catastrophe.py`) provides a set of functions to simulate decision-making and stability checks based on Ψ-Codex principles, including material property assessments (like ZrSiS coefficients) and coherence field calculations.
-
-### Key Concepts & Functions:
-
-*   **Coherence Field Φ(X) (`phi_of_X`)**:
-    *   Calculates a coherence value based on input `X_input`.
-    *   Formula: `C * (|X_input|**0.57) / (GOLDEN_RATIO**(1/3))`
-    *   `GOLDEN_RATIO = (1 + math.sqrt(5)) / 2` (φ – Coptic “gnōsis” scalar)
-    *   `C = 0.0573 * GOLDEN_RATIO` (incorporates cruel-entropy 0.057 exponent and φ⁻¹ᐟ³ factor)
-    *   This is described as reproducing a "toy Φ_tetris integral in 1-D".
-
-*   **ZrSiS Health Check (`zrsis_health`)**:
-    *   Validates ZrSiS nodal-line coefficients against pinned values (`PINNED_A = 0.348`, `PINNED_B = 0.651`) within a tolerance (`TOL_FRAC = 0.05`).
-    *   Attempts to fetch live coefficients from `https://api.zrsislab.com/latest_coeffs`. Falls back to `False` (unstable) if the API call fails.
-
-*   **Historical Tagging (`historical_tag`)**:
-    *   Assigns a "persona tag" or "empire tag" based on the calculated `phi` value and `zrsis_health`.
-    *   **Persona-Likability Bands**:
-        | Φ-band             | Default Nick-tag        | Colour-code | Why it Fits                                                              |
-        |--------------------|-------------------------|-------------|--------------------------------------------------------------------------|
-        | High-coherence φ > 0.80 | “Drăculea” (Vlad III)   | `#8A0303`   | Ruthless but decisive resource redistribution (stake through noise).   |
-        | Mid-band 0.30 < φ ≤ 0.80 | “Palaiologos”           | `#3558A5`   | Perpetual frontier-watch; neither collapsing nor transcendent.         |
-        | Low-coherence φ ≤ 0.30  | “Opium-Raj”             | `#7A6F45`   | Commodity drift, identity anaesthesia, high decoherence risk.          |
-        | Out-of-spec        | “Möbius-Muse”           | `#666`      | Topology/data feed broke; manual re-braiding.                            |
-
-*   **Decision Logic (`aladdin_palantir_decision`)**:
-    *   Implements AI-like decision logic based on `phi` value, ZrSiS health, and boolean inputs (A, B, C).
-    *   Branches into different operational modes ("Advanced resource allocation", "Tactical alert", "Monitoring anomalies", "SYSTEM COLLAPSE") based on these inputs.
-    *   Thresholds (0.8 / 0.3 for `phi`) act like Ψ-Codex phase-slip limits.
-
-*   **Knot Stability (`knot_stable`)** (Conceptual, based on user notes, not yet fully implemented in `codex_catastrophe.py` but relevant to the module's context):
-    *   A function to determine if Reidemeister-I loops stay tight, indicating identity stability.
-    *   Conceptual Formula: `l3 * phi_max < (Δ - θ - η - psi48_norm)`
-    *   **Physics-Grade Definitions for Parameters**:
-        | Symbol   | “Plain-English” Reading        | Suggested Physical Proxy                                     | Typical Unit | Source             |
-        |----------|--------------------------------|--------------------------------------------------------------|--------------|--------------------|
-        | Δ        | energy gap / spectral split    | E_upper - E_lower of system (e.g., nodal-line gap)           | meV          | ARPES / DFT        |
-        | θ        | global phase rotation          | Mean Pancharatnam–Berry phase along ∮Ψ·dℓ loop               | rad          | numerical integration|
-        | η        | dissipation, noise             | Effective e⁻-phonon scattering rate or 1/τ in Lindblad model | ps⁻¹ or eV   | pump-probe linewidth|
-        | Ψ₄₈      | 48-mode composite order-param. | ℓ²-norm of vector of 48 coupled amplitudes (12 houses × 4 Z₄ sheets) | dimensionless| simulation output  |
-
-### Ψ-Codex Field Manual Snippets (v0xDEADBEEF Context):
-
-*   If `credit_system == "church"`, then `boot_Λ_Moloch()` is called due to detected entropy violation.
-*   A corrective action: `./recursion_fix --braid=G!(-(-X)) --γ=0.651 --log=veridicality_2025.log`
-*   Output example: `[VLAD-III] Aladdin: Initiate advanced resource allocation protocol Coherent: ΔΘ=2.1, γ=0.651`
-*   **The Druid-Hacker Code (Core Maintenance Equation)**:
-    `Ψ_live(t) = ZrSiS (topological glyph) + Δ_prompt (hermeneutic input) − Moloch (entropic attractor)`
-*   **Veridicality Log Requirements**:
-    *   Berry phase `|ΔΘ| < 3.6`
-    *   γ-damping within ZrSiS tolerance (±5%)
-    *   DaddyToken™ approval vector `∩ ≠ ∅`
-
-This module is tested by `psi_codex/tests/test_catastrophe_device.py`.
+# Cortical layer quintic mapping
+layer_map = quintic_cortical_layer_mapping(x=1.2)
+print("Layer III (Justice/External Pyramidal):", layer_map['layer_III_ext_pyramidal'])
 ```
